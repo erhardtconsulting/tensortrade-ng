@@ -80,6 +80,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         self.renderer = renderer
         self.min_periods = min_periods
         self.random_start_pct = random_start_pct
+        self.render_mode = 'human'
 
         for c in self.components.values():
             c.clock = self.clock
@@ -104,7 +105,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
             "renderer": self.renderer
         }
 
-    def step(self, action: Any) -> 'Tuple[np.array, float, bool, dict]':
+    def step(self, action: Any) -> Tuple[np.array, float, bool, bool, dict]:
         """Makes one step through the environment.
 
         Parameters

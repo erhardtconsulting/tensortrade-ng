@@ -2,7 +2,7 @@
 
 from typing import List
 
-from tensortrade.feed.core.base import Stream, T, Placeholder, IterableStream
+from tensortrade.feed.core.base import Stream, Placeholder, IterableStream
 
 
 class DataFeed(Stream[dict]):

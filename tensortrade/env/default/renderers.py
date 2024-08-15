@@ -15,7 +15,7 @@
 import os
 import sys
 import logging
-import importlib
+import importlib.util
 
 from abc import abstractmethod
 from datetime import datetime
@@ -116,7 +116,7 @@ class BaseRenderer(Renderer):
 
         return log_entry
 
-    def render(self, env: 'TradingEnv', **kwargs):
+    def render(self, env: TradingEnv, **kwargs):
 
         price_history = None
         if len(env.observer.renderer_history) > 0:
@@ -141,10 +141,10 @@ class BaseRenderer(Renderer):
                    max_episodes: int = None,
                    step: int = None,
                    max_steps: int = None,
-                   price_history: 'pd.DataFrame' = None,
-                   net_worth: 'pd.Series' = None,
-                   performance: 'pd.DataFrame' = None,
-                   trades: 'OrderedDict' = None) -> None:
+                   price_history: pd.DataFrame = None,
+                   net_worth: pd.Series = None,
+                   performance: pd.DataFrame = None,
+                   trades: OrderedDict = None) -> None:
         """Renderers the current state of the environment.
 
         Parameters
@@ -214,7 +214,7 @@ class ScreenLogger(BaseRenderer):
                    price_history: pd.DataFrame = None,
                    net_worth: pd.Series = None,
                    performance: pd.DataFrame = None,
-                   trades: 'OrderedDict' = None):
+                   trades: OrderedDict = None):
         print(self._create_log_entry(episode, max_episodes, step, max_steps, date_format=self._date_format))
 
 
@@ -399,8 +399,8 @@ class PlotlyTradingChart(BaseRenderer):
         self._base_annotations = self.fig.layout.annotations
 
     def _create_trade_annotations(self,
-                                  trades: 'OrderedDict',
-                                  price_history: 'pd.DataFrame') -> 'Tuple[go.layout.Annotation]':
+                                  trades: OrderedDict,
+                                  price_history: pd.DataFrame) -> Tuple[go.layout.Annotation]:
         """Creates annotations of the new trades after the last one in the chart.
 
         Parameters
@@ -488,7 +488,7 @@ class PlotlyTradingChart(BaseRenderer):
                    price_history: pd.DataFrame = None,
                    net_worth: pd.Series = None,
                    performance: pd.DataFrame = None,
-                   trades: 'OrderedDict' = None) -> None:
+                   trades: OrderedDict = None) -> None:
         if price_history is None:
             raise ValueError("renderers() is missing required positional argument 'price_history'.")
 
@@ -525,6 +525,9 @@ class PlotlyTradingChart(BaseRenderer):
 
         if self._show_chart:
             self.fig.show()
+
+        if self._save_format:
+            self.save()
 
     def save(self) -> None:
         """Saves the current chart to a file.
@@ -763,7 +766,7 @@ _registry = {
 }
 
 
-def get(identifier: str) -> 'BaseRenderer':
+def get(identifier: str) -> BaseRenderer:
     """Gets the `BaseRenderer` that matches the identifier.
 
     Parameters
