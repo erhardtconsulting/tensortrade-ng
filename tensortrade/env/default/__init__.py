@@ -1,7 +1,7 @@
 
 from typing import Union
 
-from . import actions
+from tensortrade.env import actions
 from . import rewards
 from . import observers
 from . import stoppers
