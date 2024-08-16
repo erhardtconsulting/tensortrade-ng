@@ -2,9 +2,8 @@
 from typing import Union
 
 from tensortrade.env import actions
-from ..rewards import abstract
 from . import observers
-from . import stoppers
+from ..stoppers import max_loss_stopper
 from ..informers import abstract
 from . import renderers
 
