@@ -54,6 +54,7 @@ class Observer(Component, TimeIndexed):
         """
         raise NotImplementedError()
 
-    def reset(self, random_start=0):
+    @abstractmethod
+    def reset(self, random_start: int = 0):
         """Resets the observer."""
         pass

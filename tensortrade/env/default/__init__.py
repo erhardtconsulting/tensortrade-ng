@@ -2,9 +2,7 @@
 from typing import Union
 
 from tensortrade.env import actions
-from . import observers
-from ..stoppers import max_loss_stopper
-from ..informers import abstract
+from ..observers import tensortrade_observer
 from . import renderers
 
 from tensortrade.env.generic import TradingEnv
