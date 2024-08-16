@@ -88,6 +88,7 @@ We should now have the two preprocessed files ready (`training.csv` and `evaluat
 
 ### Create the environment build function
 Here we are using the `config` dictionary to store the CSV filename that we need to read. During the training phase, we will pass `training.csv` as the value, while during the evaluation phase we will pass `evaluation.csv`
+
 ```python
 import pandas as pd
 from tensortrade.feed.core import DataFeed, Stream
@@ -97,14 +98,16 @@ from tensortrade.oms.services.execution.simulated import execute_order
 from tensortrade.oms.wallets import Wallet, Portfolio
 import tensortrade.env.default as default
 
+
 def create_env(config):
-    dataset = pd.read_csv(filepath_or_buffer=config["csv_filename"], parse_dates=['Datetime']).fillna(method='backfill').fillna(method='ffill')
+    dataset = pd.read_csv(filepath_or_buffer=config["csv_filename"], parse_dates=['Datetime']).fillna(
+        method='backfill').fillna(method='ffill')
     ttse_commission = 0.0035  # TODO: adjust according to your commission percentage, if present
     price = Stream.source(list(dataset["Close"]), dtype="float").rename("USD-TTRD")
     ttse_options = ExchangeOptions(commission=ttse_commission)
     ttse_exchange = Exchange("TTSE", service=execute_order, options=ttse_options)(price)
 
- # Instruments, Wallets and Portfolio
+    # Instruments, Wallets and Portfolio
     USD = Instrument("USD", 2, "US Dollar")
     TTRD = Instrument("TTRD", 2, "TensorTrade Corp")
     cash = Wallet(ttse_exchange, 1000 * USD)  # This is the starting cash we are going to use
@@ -128,20 +131,20 @@ def create_env(config):
     feed = DataFeed(features)
     feed.compile()
 
-    reward_scheme = default.rewards.SimpleProfit(window_size=config["reward_window_size"])
+    reward_scheme = tensortrade.env.rewards.rewards.SimpleProfit(window_size=config["reward_window_size"])
     action_scheme = default.actions.BSH(cash=cash, asset=asset)
-    
+
     env = default.create(
-            feed=feed,
-            portfolio=portfolio,
-            action_scheme=action_scheme,
-            reward_scheme=reward_scheme,
-            renderer_feed=renderer_feed,
-            renderer=[],
-            window_size=config["window_size"],
-            max_allowed_loss=config["max_allowed_loss"]
-        )
-    
+        feed=feed,
+        portfolio=portfolio,
+        action_scheme=action_scheme,
+        reward_scheme=reward_scheme,
+        renderer_feed=renderer_feed,
+        renderer=[],
+        window_size=config["window_size"],
+        max_allowed_loss=config["max_allowed_loss"]
+    )
+
     return env
 ```
 

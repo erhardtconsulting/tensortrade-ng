@@ -10,7 +10,7 @@ from tensortrade.oms.exchanges import Exchange
 from tensortrade.oms.instruments import USD, BTC, ETH, LTC
 from tensortrade.oms.wallets import Portfolio, Wallet
 from tensortrade.env.default.actions import ManagedRiskOrders
-from tensortrade.env.default.rewards import SimpleProfit
+from tensortrade.env.rewards.abstract import SimpleProfit
 from tensortrade.feed import DataFeed, Stream, NameSpace
 from tensortrade.oms.services.execution.simulated import execute_order
 

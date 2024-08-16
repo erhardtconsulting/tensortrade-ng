@@ -9,7 +9,7 @@ Each reward scheme has a `reward` method, which takes in the `TradingEnv` at eac
 Ultimately the agent creates a sequence of actions to maximize its total reward over a given time. The `RewardScheme` is an abstract class that encapsulates how to tell the trading bot in `tensortrade` if it's trading positively or negatively over time. The same methods will be called each time for each step, and we can directly swap out compatible schemes.
 
 ```python
-from tensortrade.env.default.rewards import SimpleProfit
+from tensortrade.env.rewards.abstract import SimpleProfit
 
 reward_scheme = SimpleProfit()
 ```

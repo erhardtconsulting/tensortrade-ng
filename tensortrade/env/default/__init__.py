@@ -2,7 +2,7 @@
 from typing import Union
 
 from tensortrade.env import actions
-from . import rewards
+from ..rewards import abstract
 from . import observers
 from . import stoppers
 from . import informers
@@ -31,7 +31,7 @@ def create(portfolio: 'Portfolio',
         The portfolio to be used by the environment.
     action_scheme : `actions.TensorTradeActionScheme` or str
         The action scheme for computing actions at every step of an episode.
-    reward_scheme : `rewards.TensorTradeRewardScheme` or str
+    reward_scheme : `abstract.TensorTradeRewardScheme` or str
         The reward scheme for computing rewards at every step of an episode.
     feed : `DataFeed`
         The feed for generating observations to be used in the look back

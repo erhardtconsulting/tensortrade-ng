@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 from collections import OrderedDict
 
-import tensortrade.env.default.rewards as rewards
+import tensortrade.env.rewards.abstract as rewards
 
 from tensortrade.core import TradingContext
 from tensortrade.oms.wallets import Portfolio

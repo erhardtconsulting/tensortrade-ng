@@ -32,14 +32,13 @@ from tensortrade.oms.exchanges import Exchange
 from tensortrade.oms.services.execution.simulated import execute_order
 from tensortrade.oms.wallets import Wallet, Portfolio
 
-
 USD = Instrument("USD", 2, "U.S. Dollar")
 TTC = Instrument("TTC", 8, "TensorTrade Coin")
 
 
 def create_env(config):
-    x = np.arange(0, 2*np.pi, 2*np.pi / 1000)
-    p = Stream.source(50*np.sin(3*x) + 100, dtype="float").rename("USD-TTC")
+    x = np.arange(0, 2 * np.pi, 2 * np.pi / 1000)
+    p = Stream.source(50 * np.sin(3 * x) + 100, dtype="float").rename("USD-TTC")
 
     bitfinex = Exchange("bitfinex", service=execute_order)(
         p
@@ -61,7 +60,7 @@ def create_env(config):
         p.log().diff().fillna(0).rename("lr")
     ])
 
-    reward_scheme = default.rewards.PBR(price=p)
+    reward_scheme = tensortrade.env.rewards.rewards.PBR(price=p)
 
     action_scheme = default.actions.BSH(
         cash=cash,
@@ -78,13 +77,13 @@ def create_env(config):
     )
     return env
 
-register_env("TradingEnv", create_env)
 
+register_env("TradingEnv", create_env)
 
 analysis = tune.run(
     "PPO",
     stop={
-      "episode_reward_mean": 500
+        "episode_reward_mean": 500
     },
     config={
         "env": "TradingEnv",

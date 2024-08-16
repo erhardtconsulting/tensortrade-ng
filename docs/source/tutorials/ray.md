@@ -97,12 +97,11 @@ All funds in `asset` wallet (1) | + | - |
 The signs in the table show what we would like the sign of the rewards to be. The position-based reward scheme (PBR) achieves this mapping.
 
 ```python
-from tensortrade.env.default.rewards import TensorTradeRewardScheme
+from tensortrade.env.rewards.abstract import TensorTradeRewardScheme
 from tensortrade.feed.core import Stream, DataFeed
 
 
 class PBR(TensorTradeRewardScheme):
-
     registered_name = "pbr"
 
     def __init__(self, price: 'Stream'):
