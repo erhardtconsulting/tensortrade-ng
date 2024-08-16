@@ -5,7 +5,7 @@ from tensortrade.env import actions
 from ..rewards import abstract
 from . import observers
 from . import stoppers
-from . import informers
+from ..informers import abstract
 from . import renderers
 
 from tensortrade.env.generic import TradingEnv

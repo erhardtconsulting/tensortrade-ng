@@ -1,4 +1,4 @@
-from tensortrade.env.actions.tensor_trade_action_scheme import TensorTradeActionScheme
+from tensortrade.env.actions.abstract import TensorTradeActionScheme
 from tensortrade.env.actions.bsh import BSH
 from tensortrade.env.actions.simple_orders import SimpleOrders
 from tensortrade.env.actions.managed_risk_orders import ManagedRiskOrders
