@@ -1,4 +1,4 @@
-# Copyright 2021 The TensorTrade Authors.
+# Copyright 2024 The TensorTrade and TensorTrade-NG Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-
 
 import sys
 import os
@@ -31,14 +30,14 @@ with open(os.path.join(tensortrade_directory, 'tensortrade', 'version.py'), 'r')
             version = line[15:-2]
 
 setup(
-    name='tensortrade',
+    name='tensortrade-ng',
     version=version,
-    description='TensorTrade: A reinforcement learning library for training, evaluating, and deploying robust trading agents.',
-    long_description='TensorTrade: A reinforcement learning library for training, evaluating, and deploying robust trading agents.',
+    description='TensorTrade-NG: A reinforcement learning library for training, evaluating, and deploying robust trading agents.',
+    long_description='TensorTrade-NG: A reinforcement learning library for training, evaluating, and deploying robust trading agents.',
     long_description_content_type='text/markdown',
-    author='Adam King <adamjking3@gmail.com>, Matthew Brulhardt <mwbrulhardt@gmail.com>',
-    maintainer='Carlo Grisetti <carlo.grisetti@gmail.com>',
-    url='https://github.com/tensortrade-org/tensortrade',
+    author='Simon Erhardt <simon@erhardt.consulting>, Adam King <adamjking3@gmail.com>, Matthew Brulhardt <mwbrulhardt@gmail.com>',
+    maintainer='Simon Erhardt <simon@erhardt.consulting>',
+    url='https://github.com/erhardtconsulting/tensortrade-ng',
     packages=[
         package for package in find_packages(exclude=('tests', 'docs'))
         if package.startswith('tensortrade')
@@ -83,7 +82,7 @@ setup(
         'Intended Audience :: Information Technology',
         'License :: OSI Approved :: Apache Software License',
         'Operating System :: OS Independent',
-        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
         'Topic :: Office/Business :: Financial :: Investment',
         'Topic :: Office/Business :: Financial',
         'Topic :: Scientific/Engineering :: Information Analysis',
