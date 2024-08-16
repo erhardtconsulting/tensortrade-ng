@@ -22,6 +22,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 project = 'TensorTrade-NG'
 author = 'Simon Erhardt'
+github_url = 'https://github.com/erhardtconsulting/tensortrade-ng'
 
 with open(os.path.join('../../', 'tensortrade', 'version.py'), 'r') as filehandle:
     for line in filehandle:
