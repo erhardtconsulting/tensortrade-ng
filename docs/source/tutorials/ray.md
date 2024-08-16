@@ -134,10 +134,10 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-from tensortrade.env.generic import Renderer
+from tensortrade.env.generic import AbstractRenderer
 
 
-class PositionChangeChart(Renderer):
+class PositionChangeChart(AbstractRenderer):
 
     def __init__(self, color: str = "orange"):
         self.color = "orange"

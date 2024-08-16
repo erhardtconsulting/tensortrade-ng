@@ -1,4 +1,4 @@
-# Copyright 2020 The TensorTrade Authors.
+# Copyright 2024 The TensorTrade and TensorTrade-NG Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,11 +11,13 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
+import importlib.util
 
-from tensortrade.env.generic.components.reward_scheme import RewardScheme
-from tensortrade.env.generic.components.action_scheme import ActionScheme
-from tensortrade.env.generic.components.observer import Observer
-from tensortrade.env.generic.components.stopper import Stopper
-from tensortrade.env.generic.components.informer import Informer
+from tensortrade.env.renderers.file_logger import FileLogger
+from tensortrade.env.renderers.screen_logger import ScreenLogger
 
-from tensortrade.env.generic.environment import TradingEnv
+if importlib.util.find_spec("matplotlib"):
+    from tensortrade.env.renderers.matplotlib_trading_chart import MatplotlibTradingChart
+
+if importlib.util.find_spec("plotly"):
+    from tensortrade.env.renderers.plotly_trading_chart import PlotlyTradingChart

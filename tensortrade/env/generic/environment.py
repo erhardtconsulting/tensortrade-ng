@@ -20,6 +20,7 @@ from random import randint
 
 import gymnasium
 import numpy as np
+import pandas as pd
 
 from tensortrade.core import TimeIndexed, Clock, Component
 from tensortrade.env.generic import (
@@ -27,9 +28,10 @@ from tensortrade.env.generic import (
     RewardScheme,
     Observer,
     Stopper,
-    Informer,
-    Renderer
+    Informer
 )
+
+from tensortrade.env.interfaces import AbstractRenderer
 
 
 class TradingEnv(gymnasium.Env, TimeIndexed):
@@ -49,7 +51,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
     informer : `Informer`
         A component for providing information after each step of the
         environment.
-    renderer : `Renderer`
+    renderer : `AbstractRenderer`
         A component for rendering the environment.
     kwargs : keyword arguments
         Additional keyword arguments needed to create the environment.
@@ -64,7 +66,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
                  observer: Observer,
                  stopper: Stopper,
                  informer: Informer,
-                 renderer: Renderer,
+                 renderer: AbstractRenderer,
                  min_periods: int = None,
                  max_episode_steps: int = None,
                  random_start_pct: float = 0.00,
@@ -170,7 +172,27 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
     def render(self, **kwargs) -> None:
         """Renders the environment."""
-        self.renderer.render(self, **kwargs)
+        if self.renderer is not None:
+            episode = kwargs.get('episode', None)
+            max_episodes = kwargs.get('max_episodes', None)
+            max_steps = kwargs.get('max_steps', None)
+
+            price_history = None
+            if len(self.observer.renderer_history) > 0:
+                price_history = pd.DataFrame(self.observer.renderer_history)
+
+            performance = pd.DataFrame.from_dict(self.action_scheme.portfolio.performance, orient='index')
+
+            self.renderer.render(
+                episode=episode,
+                max_episodes=max_episodes,
+                step=self.clock.step,
+                max_steps=max_steps,
+                price_history=price_history,
+                net_worth=performance.net_worth,
+                performance=performance.drop(columns=['base_symbol']),
+                trades=self.action_scheme.broker.trades
+            )
 
     def save(self) -> None:
         """Saves the rendered view of the environment."""
