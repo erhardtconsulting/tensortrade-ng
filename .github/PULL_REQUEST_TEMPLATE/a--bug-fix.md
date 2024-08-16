@@ -2,11 +2,12 @@
 name: a) Bug fix
 about: This PR fixes a bug
 labels: bugfix
+assignees: chrootlogin
 ---
 
 <!--
 Please make sure you've read and understood our contributing guidelines;
-https://github.com/notadamking/tensortrader/blob/master/CONTRIBUTING.md
+https://github.com/erhardtconsulting/tensortrade-ng/blob/master/CONTRIBUTING.md
 -->
 
 **- What bug I fixed**

@@ -1,5 +1,4 @@
 <em>Please make sure that this is a Bug or a Feature Request and provide all applicable information asked by the template.
-If your issue is an **implementation question**, please ask your question on [StackOverflow](http://stackoverflow.com/questions/tagged/tensortrader) or on the [TensorTrade Discord](https://discord.gg/ZZ7BGWh) #help-desk channel instead of opening a GitHub issue.</em>
 
 **System information**
 

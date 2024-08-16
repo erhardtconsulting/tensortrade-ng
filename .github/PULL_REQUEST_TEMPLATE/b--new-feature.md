@@ -2,12 +2,12 @@
 name: b) New feature
 about: This PR adds a new feature.
 labels: feature
-assignees: notadamking
+assignees: chrootlogin
 ---
 
 <!--
 Please make sure you've read and understood our contributing guidelines;
-https://github.com/notadamking/tensortrader/blob/master/CONTRIBUTING.md
+https://github.com/erhardtconsulting/tensortrade-ng/blob/master/CONTRIBUTING.md
 -->
 
 This pull request closes #issue_number_here .
@@ -25,4 +25,4 @@ including tests for the new feature you added.
 
 - [ ] I updated the docs.
 
-This pull request adds a new feature to TensorTrade. @notadamking, could you please take a look at it?
+This pull request adds a new feature to TensorTrade. @chrootlogin, could you please take a look at it?
