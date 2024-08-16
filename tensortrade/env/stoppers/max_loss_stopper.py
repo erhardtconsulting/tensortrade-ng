@@ -15,12 +15,12 @@ from __future__ import annotations
 
 import typing
 
-from tensortrade.env.generic import Stopper
+from tensortrade.env.interfaces import AbstractStopper
 
 if typing.TYPE_CHECKING:
-    from tensortrade.env.generic import TradingEnv
+    from tensortrade.env.interfaces import TradingEnv
 
-class MaxLossStopper(Stopper):
+class MaxLossStopper(AbstractStopper):
     """A stopper that stops an episode if the portfolio has lost a particular
     percentage of its wealth.
 

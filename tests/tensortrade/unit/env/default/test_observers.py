@@ -1,5 +1,5 @@
 
-from tensortrade.env.observers.tensortrade_observer import _create_internal_streams, _create_wallet_source
+from tensortrade.env.observers.default import _create_internal_streams, _create_wallet_source
 from tensortrade.feed.core import DataFeed, Stream
 from tensortrade.oms.exchanges import Exchange
 from tensortrade.oms.services.execution.simulated import execute_order

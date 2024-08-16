@@ -1,4 +1,4 @@
-# Copyright 2020 The TensorTrade Authors.
+# Copyright 2024 The TensorTrade and TensorTrade-NG Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -29,7 +29,7 @@ class AbstractRenderer(Component):
     """A component for rendering a view of the environment at each step of
     an episode."""
 
-    registered_name = "renderer"
+    registered_name = "abstract_renderer"
 
     def __init__(self):
         super().__init__()

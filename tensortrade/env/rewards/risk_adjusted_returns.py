@@ -18,12 +18,12 @@ import typing
 import numpy as np
 import pandas as pd
 
-from tensortrade.env.rewards import TensorTradeRewardScheme
+from tensortrade.env.interfaces import AbstractRewardScheme
 
 if typing.TYPE_CHECKING:
     from tensortrade.oms.wallets import Portfolio
 
-class RiskAdjustedReturns(TensorTradeRewardScheme):
+class RiskAdjustedReturns(AbstractRewardScheme):
     """A reward scheme that rewards the agent for increasing its net worth,
     while penalizing more volatile strategies.
 
@@ -38,6 +38,8 @@ class RiskAdjustedReturns(TensorTradeRewardScheme):
     window_size : int
         The size of the look back window for computing the reward.
     """
+
+    registered_name = "risk_adjusted_returns"
 
     def __init__(self,
                  return_algorithm: str = 'sharpe',
@@ -57,6 +59,25 @@ class RiskAdjustedReturns(TensorTradeRewardScheme):
         self._risk_free_rate = self.default('risk_free_rate', risk_free_rate)
         self._target_returns = self.default('target_returns', target_returns)
         self._window_size = self.default('window_size', window_size)
+
+    def get_reward(self, portfolio: Portfolio) -> float:
+        """Computes the reward corresponding to the selected risk-adjusted return metric.
+
+        Parameters
+        ----------
+        portfolio : `Portfolio`
+            The current portfolio being used by the environment.
+
+        Returns
+        -------
+        float
+            The reward corresponding to the selected risk-adjusted return metric.
+        """
+        net_worths = [nw['net_worth'] for nw in portfolio.performance.values()][-(self._window_size + 1):]
+        returns = pd.Series(net_worths).pct_change().dropna()
+        risk_adjusted_return = self._return_algorithm(returns)
+
+        return risk_adjusted_return
 
     def _sharpe_ratio(self, returns: pd.Series) -> float:
         """Computes the sharpe ratio for a given series of a returns.
@@ -101,21 +122,3 @@ class RiskAdjustedReturns(TensorTradeRewardScheme):
         downside_std = np.sqrt(np.std(downside_returns))
 
         return (expected_return - self._risk_free_rate + 1e-9) / (downside_std + 1e-9)
-
-    def get_reward(self, portfolio: Portfolio) -> float:
-        """Computes the reward corresponding to the selected risk-adjusted return metric.
-
-        Parameters
-        ----------
-        portfolio : `Portfolio`
-            The current portfolio being used by the environment.
-
-        Returns
-        -------
-        float
-            The reward corresponding to the selected risk-adjusted return metric.
-        """
-        net_worths = [nw['net_worth'] for nw in portfolio.performance.values()][-(self._window_size + 1):]
-        returns = pd.Series(net_worths).pct_change().dropna()
-        risk_adjusted_return = self._return_algorithm(returns)
-        return risk_adjusted_return

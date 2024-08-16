@@ -17,18 +17,21 @@ import logging
 import typing
 from abc import abstractmethod
 
-from tensortrade.env.generic import ActionScheme
+from tensortrade.core.component import Component
+from tensortrade.core.base import TimeIndexed
 from tensortrade.oms.orders import Broker
 
 if typing.TYPE_CHECKING:
     from typing import List, Any, Optional
 
+    from gymnasium.spaces import Space
+
     from tensortrade.core import Clock
-    from tensortrade.env.generic import TradingEnv
+    from tensortrade.env.interfaces import TradingEnv
     from tensortrade.oms.orders import Order
     from tensortrade.oms.wallets import Portfolio
 
-class TensorTradeActionScheme(ActionScheme):
+class AbstractActionScheme(Component, TimeIndexed):
     """An abstract base class for any `ActionScheme` that wants to be
     compatible with the built in OMS.
 
@@ -51,10 +54,19 @@ class TensorTradeActionScheme(ActionScheme):
         Gets the list of orders to be submitted for the given action.
     """
 
+    registered_name = "abstract_action_scheme"
+
     def __init__(self) -> None:
         super().__init__()
         self.portfolio: Optional[Portfolio] = None
         self.broker: Broker = Broker()
+
+    @property
+    @abstractmethod
+    def action_space(self) -> Space:
+        """The action space of the `TradingEnv`. (`Space`, read-only)
+        """
+        raise NotImplementedError()
 
     @property
     def clock(self) -> Clock:

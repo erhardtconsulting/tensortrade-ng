@@ -15,13 +15,17 @@ from __future__ import annotations
 
 import typing
 
-from tensortrade.env.generic import Informer
+from tensortrade.env.interfaces import AbstractInformer
 
 if typing.TYPE_CHECKING:
     from typing import Any, Dict
-    from tensortrade.env.generic import TradingEnv
 
-class SimpleInformer(Informer):
+    from tensortrade.env.interfaces import TradingEnv
+
+class SimpleInformer(AbstractInformer):
+
+    registered_name = "simple_informer"
+
     def info(self, env: TradingEnv) -> Dict[str, Any]:
         return {
             'step': self.clock.step,

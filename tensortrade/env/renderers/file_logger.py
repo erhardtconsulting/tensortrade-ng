@@ -43,6 +43,8 @@ class FileLogger(AbstractRenderer):
         The format of the timestamp of the log entry. Node for default.
     """
 
+    registered_name = "file_logger"
+
     DEFAULT_LOG_FORMAT: str = '[%(asctime)-15s] %(message)s'
     DEFAULT_TIMESTAMP_FORMAT: str = '%Y-%m-%d %H:%M:%S'
 

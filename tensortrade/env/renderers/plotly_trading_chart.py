@@ -78,6 +78,8 @@ class PlotlyTradingChart(AbstractRenderer):
     .. [5] https://plot.ly/python/#chart-events
     """
 
+    registered_name = "plotly_trading_chart"
+
     def __init__(self,
                  display: bool = True,
                  height: int = None,

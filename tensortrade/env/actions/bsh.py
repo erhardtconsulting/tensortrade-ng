@@ -17,9 +17,8 @@ import typing
 
 from gymnasium.spaces import Discrete
 
-from tensortrade.env.actions import TensorTradeActionScheme
+from tensortrade.env.interfaces import AbstractActionScheme
 from tensortrade.oms.orders import proportion_order
-
 
 if typing.TYPE_CHECKING:
     from typing import List
@@ -28,7 +27,7 @@ if typing.TYPE_CHECKING:
     from tensortrade.oms.wallets import Portfolio, Wallet
 
 
-class BSH(TensorTradeActionScheme):
+class BSH(AbstractActionScheme):
     """A simple discrete action scheme where the only options are to buy, sell,
     or hold.
 

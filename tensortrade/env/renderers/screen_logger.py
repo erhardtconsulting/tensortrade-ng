@@ -31,6 +31,8 @@ class ScreenLogger(AbstractRenderer):
         The format for logging the date.
     """
 
+    registered_name = "screen_logger"
+
     DEFAULT_FORMAT: str = "[%(asctime)-15s] %(message)s"
 
     def __init__(self, date_format: str = "%Y-%m-%d %H:%M:%S"):

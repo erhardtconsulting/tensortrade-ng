@@ -15,13 +15,13 @@ from __future__ import annotations
 
 import typing
 
-from tensortrade.env.rewards import TensorTradeRewardScheme
+from tensortrade.env.interfaces import AbstractRewardScheme
 from tensortrade.feed import DataFeed, Stream
 
 if typing.TYPE_CHECKING:
     from tensortrade.oms.wallets import Portfolio
 
-class PBR(TensorTradeRewardScheme):
+class PBR(AbstractRewardScheme):
     """A reward scheme for position-based returns.
 
     * Let :math:`p_t` denote the price at time t.
@@ -54,7 +54,7 @@ class PBR(TensorTradeRewardScheme):
     def on_action(self, action: int) -> None:
         self.position = -1 if action == 0 else 1
 
-    def get_reward(self, portfolio: Portfolio) -> float:
+    def reward(self, portfolio: Portfolio) -> float:
         return self.feed.next()["reward"]
 
     def reset(self) -> None:

@@ -18,7 +18,7 @@ from itertools import product
 
 from gymnasium.spaces import Discrete
 
-from tensortrade.env.actions import TensorTradeActionScheme
+from tensortrade.env.interfaces import AbstractActionScheme
 from tensortrade.oms.orders import TradeType, TradeSide, risk_managed_order
 
 if typing.TYPE_CHECKING:
@@ -29,7 +29,7 @@ if typing.TYPE_CHECKING:
     from tensortrade.oms.orders import Order, OrderListener
     from tensortrade.oms.wallets import Portfolio
 
-class ManagedRiskOrders(TensorTradeActionScheme):
+class ManagedRiskOrders(AbstractActionScheme):
     """A discrete action scheme that determines actions based on managing risk,
        through setting a follow-up stop loss and take profit on every order.
 

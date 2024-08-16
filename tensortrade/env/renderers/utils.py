@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License
 from __future__ import annotations
+
 import os
 import typing
 from datetime import datetime
@@ -61,6 +62,8 @@ class AggregateRenderer(AbstractRenderer):
     renderers : List[Renderer]
         A list of renderers to aggregate.
     """
+
+    registered_name = "aggregate_renderer"
 
     def __init__(self, renderers: List[AbstractRenderer]) -> None:
         super().__init__()

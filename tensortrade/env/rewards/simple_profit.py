@@ -15,12 +15,12 @@ from __future__ import annotations
 
 import typing
 
-from tensortrade.env.rewards import TensorTradeRewardScheme
+from tensortrade.env.interfaces import AbstractRewardScheme
 
 if typing.TYPE_CHECKING:
     from tensortrade.oms.wallets import Portfolio
 
-class SimpleProfit(TensorTradeRewardScheme):
+class SimpleProfit(AbstractRewardScheme):
     """A simple reward scheme that rewards the agent for incremental increases
     in net worth.
 
@@ -35,10 +35,12 @@ class SimpleProfit(TensorTradeRewardScheme):
         The size of the look back window for computing the reward.
     """
 
+    registered_name = "simple_profit"
+
     def __init__(self, window_size: int = 1):
         self._window_size = self.default('window_size', window_size)
 
-    def get_reward(self, portfolio: Portfolio) -> float:
+    def reward(self, portfolio: Portfolio) -> float:
         """Rewards the agent for incremental increases in net worth over a
         sliding window.
 
@@ -54,6 +56,7 @@ class SimpleProfit(TensorTradeRewardScheme):
             `window_size` time steps.
         """
         net_worths = [nw['net_worth'] for nw in portfolio.performance.values()]
+
         if len(net_worths) > 1:
             return net_worths[-1] / net_worths[-min(len(net_worths), self._window_size + 1)] - 1.0
         else:

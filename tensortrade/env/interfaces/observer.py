@@ -1,4 +1,4 @@
-# Copyright 2020 The TensorTrade Authors.
+# Copyright 2024 The TensorTrade and TensorTrade-NG Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,25 +11,27 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
+from __future__ import annotations
 
+import typing
 
 from abc import abstractmethod
-
-
-import numpy as np
-
-from gymnasium.spaces import Space
-
 
 from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
 
+if typing.TYPE_CHECKING:
+    import numpy as np
 
-class Observer(Component, TimeIndexed):
+    from gymnasium import Space
+
+    from tensortrade.env.interfaces import TradingEnv
+
+class AbstractObserver(Component, TimeIndexed):
     """A component to generate an observation at each step of an episode.
     """
 
-    registered_name = "observer"
+    registered_name = "abstract_observer"
 
     @property
     @abstractmethod
@@ -39,7 +41,7 @@ class Observer(Component, TimeIndexed):
         raise NotImplementedError()
 
     @abstractmethod
-    def observe(self, env: 'TradingEnv') -> np.array:
+    def observe(self, env: TradingEnv) -> np.array:
         """Gets the observation at the current step of an episode
 
         Parameters

@@ -18,7 +18,7 @@ from itertools import product
 
 from gymnasium.spaces import Discrete
 
-from tensortrade.env.actions import TensorTradeActionScheme
+from tensortrade.env.interfaces import AbstractActionScheme
 from tensortrade.oms.orders import TradeType, TradeSide
 
 if typing.TYPE_CHECKING:
@@ -31,7 +31,7 @@ if typing.TYPE_CHECKING:
     from tensortrade.oms.wallets import Portfolio
 
 
-class SimpleOrders(TensorTradeActionScheme):
+class SimpleOrders(AbstractActionScheme):
     """A discrete action scheme that determines actions based on a list of
     trading pairs, order criteria, and trade sizes.
 
@@ -55,6 +55,8 @@ class SimpleOrders(TensorTradeActionScheme):
     min_order_abs : float
         The minimum value when placing an order, calculated in absolute order value.
     """
+
+    registered_name = "simple_orders"
 
     def __init__(self,
                  criteria: Union[List[Criteria], Criteria] = None,

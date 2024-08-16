@@ -1,4 +1,4 @@
-# Copyright 2020 The TensorTrade Authors.
+# Copyright 2024 The TensorTrade and TensorTrade-NG Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,11 +11,12 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
+from __future__ import annotations
 
+import typing
 import uuid
 import logging
 
-from typing import Dict, Any, Tuple
 from random import randint
 
 import gymnasium
@@ -23,15 +24,18 @@ import numpy as np
 import pandas as pd
 
 from tensortrade.core import TimeIndexed, Clock, Component
-from tensortrade.env.generic import (
-    ActionScheme,
-    RewardScheme,
-    Observer,
-    Stopper,
-    Informer
-)
+from tensortrade.env.interfaces import AbstractObserver
 
-from tensortrade.env.interfaces import AbstractRenderer
+if typing.TYPE_CHECKING:
+    from typing import Dict, Tuple, Any
+
+    from tensortrade.env.interfaces import (
+        AbstractActionScheme,
+        AbstractRewardScheme,
+        AbstractRenderer,
+        AbstractInformer,
+        AbstractStopper
+    )
 
 
 class TradingEnv(gymnasium.Env, TimeIndexed):
@@ -40,15 +44,15 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
     Parameters
     ----------
-    action_scheme : `ActionScheme`
+    action_scheme : `AbstractActionScheme`
         A component for generating an action to perform at each step of the
         environment.
     reward_scheme : `RewardScheme`
         A component for computing reward after each step of the environment.
-    observer : `Observer`
+    observer : `AbstractObserver`
         A component for generating observations after each step of the
         environment.
-    informer : `Informer`
+    informer : `AbstractInformer`
         A component for providing information after each step of the
         environment.
     renderer : `AbstractRenderer`
@@ -61,11 +65,11 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
     episode_id: str = None
 
     def __init__(self,
-                 action_scheme: ActionScheme,
-                 reward_scheme: RewardScheme,
-                 observer: Observer,
-                 stopper: Stopper,
-                 informer: Informer,
+                 action_scheme: AbstractActionScheme,
+                 reward_scheme: AbstractRewardScheme,
+                 observer: AbstractObserver,
+                 stopper: AbstractStopper,
+                 informer: AbstractInformer,
                  renderer: AbstractRenderer,
                  min_periods: int = None,
                  max_episode_steps: int = None,
@@ -96,7 +100,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
             self.logger.setLevel(kwargs.get('log_level', logging.DEBUG))
 
     @property
-    def components(self) -> 'Dict[str, Component]':
+    def components(self) -> Dict[str, Component]:
         """The components of the environment. (`Dict[str,Component]`, read-only)"""
         return {
             "action_scheme": self.action_scheme,
@@ -139,7 +143,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
         return obs, reward, terminated, truncated, info
 
-    def reset(self,seed = None, options = None) -> tuple["np.array", dict[str, Any]]:
+    def reset(self, seed = None, options = None) -> Tuple[np.array, Dict[str, Any]]:
         """Resets the environment.
 
         Returns
@@ -158,7 +162,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
         for c in self.components.values():
             if hasattr(c, "reset"):
-                if isinstance(c, Observer):
+                if isinstance(c, AbstractObserver):
                     c.reset(random_start=random_start)
                 else:
                     c.reset()

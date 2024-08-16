@@ -1,4 +1,4 @@
-# Copyright 2020 The TensorTrade Authors.
+# Copyright 2024 The TensorTrade and TensorTrade-NG Authors.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -11,36 +11,42 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
+from __future__ import annotations
 
+import typing
 from abc import abstractmethod
 
 from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
 
+if typing.TYPE_CHECKING:
+    from typing import Dict, Any
 
-class Stopper(Component, TimeIndexed):
-    """A component for determining if the environment satisfies a defined
-    stopping criteria.
+    from tensortrade.env.interfaces import TradingEnv
+
+
+class AbstractInformer(Component, TimeIndexed):
+    """A component to provide information at each step of an episode.
     """
 
-    registered_name = "stopper"
+    registered_name = "abstract_informer"
 
     @abstractmethod
-    def stop(self, env: 'TradingEnv') -> bool:
-        """Computes if the environment satisfies the defined stopping criteria.
+    def info(self, env: TradingEnv) -> Dict[str, Any]:
+        """Provides information at a given step of an episode.
 
         Parameters
         ----------
-        env : `TradingEnv`
+        env: 'TradingEnv'
             The trading environment.
 
         Returns
         -------
-        bool
-            If the environment should stop or continue.
+        dict:
+            A dictionary of information about the portfolio and net worth.
         """
         raise NotImplementedError()
 
-    def reset(self) -> None:
-        """Resets the stopper."""
+    def reset(self):
+        """Resets the informer."""
         pass

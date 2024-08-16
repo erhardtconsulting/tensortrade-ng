@@ -20,17 +20,18 @@ from random import randrange
 import numpy as np
 from gymnasium.spaces import Box
 
-from tensortrade.env.generic import Observer
+from tensortrade.env.interfaces import AbstractObserver
 from tensortrade.env.utils import create_internal_streams, ObservationHistory
 from tensortrade.feed import Stream, DataFeed
 
 if typing.TYPE_CHECKING:
     from gymnasium.spaces import Space
 
-    from tensortrade.env.generic import TradingEnv
+    from tensortrade.env.interfaces import TradingEnv
     from tensortrade.oms.wallets import Portfolio
 
-class IntradayObserver(Observer):
+
+class IntradayObserver(AbstractObserver):
     """The IntradayObserver observer that is compatible with the other `default`
     components.
     Parameters
@@ -69,6 +70,8 @@ class IntradayObserver(Observer):
     renderer_history : `List[dict]`
         The history of the renderer data feed.
     """
+
+    registered_name = "intraday_observer"
 
     def __init__(self,
                  portfolio: Portfolio,

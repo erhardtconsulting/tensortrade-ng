@@ -51,6 +51,9 @@ class MatplotlibTradingChart(AbstractRenderer):
         A string that precedes automatically-created file name
         when charts are saved. Default 'chart_'.
     """
+
+    registered_name = "matplotlib_trading_chart"
+
     def __init__(self,
                  display: bool = True,
                  save_format: str = None,
