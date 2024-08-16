@@ -20,8 +20,8 @@ sys.path.insert(0, os.path.abspath('../..'))
 
 # -- Project information -----------------------------------------------------
 
-project = 'TensorTrade'
-author = 'Adam King'
+project = 'TensorTrade-NG'
+author = 'Simon Erhardt'
 
 with open(os.path.join('../../', 'tensortrade', 'version.py'), 'r') as filehandle:
     for line in filehandle:
@@ -279,7 +279,7 @@ nbsphinx_prolog = (
     .. nbinfo::
         This page was generated from `{{ docpath }}`__.
 
-    __ https://github.com/notadamking/tensortrade/blob/
+    __ https://github.com/erhardtconsulting/tensortrade-ng/blob/
         """ +
     git_rev + r"{{ docpath }}"
 )

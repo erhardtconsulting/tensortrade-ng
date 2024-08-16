@@ -26,3 +26,8 @@ examples/training_logs
 
 # virtual environment
 venv
+.venv
+
+# documentation
+/docs/build
+/docs/source/api
