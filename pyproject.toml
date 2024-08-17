@@ -73,5 +73,8 @@ Documentation = "https://tensortrade-ng.io"
 Repository = "https://github.com/erhardtconsulting/tensortrade-ng.git"
 Issues = "https://github.com/erhardtconsulting/tensortrade-ng/issues"
 
+[tool.setuptools.packages.find]
+exclude = ["junit"]
+
 [tool.setuptools_scm]
 version_file = "tensortrade/version.py"

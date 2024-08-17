@@ -1,6 +1,0 @@
-pyment>=0.3.3
-twine>=5.1.1
-build>=1.2.1
-sphinx>=7.4.7
-sphinx_rtd_theme>=2.0.0
-docutils>=0.21.2

@@ -35,3 +35,6 @@ venv
 # coverate
 /coverage.xml
 /junit
+
+# setuptools_scm
+tensortrade/version.py
