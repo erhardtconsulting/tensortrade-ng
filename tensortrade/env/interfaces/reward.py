@@ -21,26 +21,21 @@ from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
 
 if typing.TYPE_CHECKING:
-    from tensortrade.env.interfaces import TradingEnv
+    from tensortrade.oms.wallets import Portfolio
 
 class AbstractRewardScheme(Component, TimeIndexed):
     """A component to compute the reward at each step of an episode."""
 
-    registered_name = "abstract_rewards"
+    registered_name = "rewards"
 
     @abstractmethod
-    def reward(self, env: TradingEnv) -> float:
+    def reward(self, portfolio: Portfolio) -> float:
         """Computes the reward for the current step of an episode.
 
-        Parameters
-        ----------
-        env : `TradingEnv`
-            The trading environment
-
-        Returns
-        -------
-        float
-            The computed reward.
+        :param portfolio: The portfolio associated with the :class:`TensorTradeActionScheme`.
+        :type portfolio: Portfolio
+        :return: The computed reward.
+        :rtype: float
         """
         raise NotImplementedError()
 

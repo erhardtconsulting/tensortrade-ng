@@ -1,6 +1,5 @@
-
-
 from tensortrade.core import TradingContext
+from tests.tensortrade.unit.utils import get_path
 
 
 def get_context():
@@ -49,7 +48,6 @@ def test_init_with_kwargs():
 
 
 def test_context_creation():
-
     with TradingContext(config) as tc1:
         assert tc1.data == config
 
@@ -65,7 +63,6 @@ def test_get_context_from_tensor_trade_level():
 
 
 def test_context_within_context():
-
     with TradingContext(config) as tc1:
         assert get_context() == tc1
 
@@ -76,7 +73,6 @@ def test_context_within_context():
 
 
 def test_context_retains_data_outside_with():
-
     with TradingContext(config) as tc:
         assert tc.data == config
 
@@ -84,7 +80,7 @@ def test_context_retains_data_outside_with():
 
 
 def test_create_trading_context_from_json():
-    path = "tests/data/config/configuration.json"
+    path = get_path("../../data/config/configuration.json")
 
     actions = {"n_actions": 24, "action_type": "discrete"}
     exchanges = {
@@ -103,7 +99,7 @@ def test_create_trading_context_from_json():
 
 
 def test_create_trading_context_from_yaml():
-    path = "tests/data/config/configuration.yaml"
+    path = get_path("../../data/config/configuration.yaml")
 
     actions = {"n_actions": 24, "action_type": "discrete"}
     exchanges = {
@@ -115,7 +111,6 @@ def test_create_trading_context_from_yaml():
     }
 
     with TradingContext.from_yaml(path) as tc:
-
         assert tc.shared['base_instrument'] == "EURO"
         assert tc.shared['instruments'] == ["BTC", "ETH"]
         assert tc._config['actions'] == actions

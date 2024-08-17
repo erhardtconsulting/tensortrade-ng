@@ -43,7 +43,7 @@ setup(
         if package.startswith('tensortrade')
     ],
     license='Apache 2.0',
-    python_requires='>=3.11.9',
+    python_requires='>=3.12.0',
     install_requires=[
         'numpy>=1.17.0',
         'pandas>=0.25.0',

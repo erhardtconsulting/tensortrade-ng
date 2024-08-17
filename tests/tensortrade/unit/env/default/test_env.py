@@ -1,28 +1,26 @@
-
-
 import pandas as pd
 import pytest
 import ta
+from tensortrade.env import create
+from tensortrade.env.actions import ManagedRiskOrders
+from tensortrade.env.rewards import SimpleProfit
 
-import tensortrade.env.default as default
-
+from tensortrade.feed import DataFeed, Stream, NameSpace
 from tensortrade.oms.exchanges import Exchange
 from tensortrade.oms.instruments import USD, BTC, ETH, LTC
-from tensortrade.oms.wallets import Portfolio, Wallet
-from tensortrade.env.default.actions import ManagedRiskOrders
-from tensortrade.env.rewards.abstract import SimpleProfit
-from tensortrade.feed import DataFeed, Stream, NameSpace
 from tensortrade.oms.services.execution.simulated import execute_order
+from tensortrade.oms.wallets import Portfolio, Wallet
+from tests.tensortrade.unit.utils import get_path
 
 
 @pytest.fixture
 def portfolio():
 
-    df1 = pd.read_csv("tests/data/input/bitfinex_(BTC,ETH)USD_d.csv").tail(100)
+    df1 = pd.read_csv(get_path("../../data/input/bitfinex_(BTC,ETH)USD_d.csv")).tail(100)
     df1 = df1.rename({"Unnamed: 0": "date"}, axis=1)
     df1 = df1.set_index("date")
 
-    df2 = pd.read_csv("tests/data/input/bitstamp_(BTC,ETH,LTC)USD_d.csv").tail(100)
+    df2 = pd.read_csv(get_path("../../data/input/bitstamp_(BTC,ETH,LTC)USD_d.csv")).tail(100)
     df2 = df2.rename({"Unnamed: 0": "date"}, axis=1)
     df2 = df2.set_index("date")
 
@@ -51,7 +49,7 @@ def portfolio():
 
 def test_runs_with_external_feed_only(portfolio):
 
-    df = pd.read_csv("tests/data/input/bitfinex_(BTC,ETH)USD_d.csv").tail(100)
+    df = pd.read_csv(get_path("../../data/input/bitfinex_(BTC,ETH)USD_d.csv")).tail(100)
     df = df.rename({"Unnamed: 0": "date"}, axis=1)
     df = df.set_index("date")
 
@@ -81,27 +79,25 @@ def test_runs_with_external_feed_only(portfolio):
     action_scheme = ManagedRiskOrders()
     reward_scheme = SimpleProfit()
 
-    env = default.create(
+    env = create(
         portfolio=portfolio,
         action_scheme=action_scheme,
         reward_scheme=reward_scheme,
         feed=feed,
-        window_size=50,
-        enable_logger=False,
+        window_size=50
     )
 
     done = False
     obs = env.reset()
     while not done:
         action = env.action_space.sample()
-        obs, reward, done, info = env.step(action)
+        obs, reward, done, _, info = env.step(action)
 
     assert obs.shape[0] == 50
 
 
 def test_runs_with_random_start(portfolio):
-
-    df = pd.read_csv("tests/data/input/bitfinex_(BTC,ETH)USD_d.csv").tail(100)
+    df = pd.read_csv(get_path("../../data/input/bitfinex_(BTC,ETH)USD_d.csv")).tail(100)
     df = df.rename({"Unnamed: 0": "date"}, axis=1)
     df = df.set_index("date")
 
@@ -131,13 +127,12 @@ def test_runs_with_random_start(portfolio):
     action_scheme = ManagedRiskOrders()
     reward_scheme = SimpleProfit()
 
-    env = default.create(
+    env = create(
         portfolio=portfolio,
         action_scheme=action_scheme,
         reward_scheme=reward_scheme,
         feed=feed,
         window_size=50,
-        enable_logger=False,
         random_start_pct=0.10,  # Randomly start within the first 10% of the sample
     )
 
@@ -145,6 +140,6 @@ def test_runs_with_random_start(portfolio):
     obs = env.reset()
     while not done:
         action = env.action_space.sample()
-        obs, reward, done, info = env.step(action)
+        obs, reward, done, _, info = env.step(action)
 
     assert obs.shape[0] == 50

@@ -56,7 +56,7 @@ class SimpleOrders(AbstractActionScheme):
         The minimum value when placing an order, calculated in absolute order value.
     """
 
-    registered_name = "simple_orders"
+    registered_name = "simple"
 
     def __init__(self,
                  criteria: Union[List[Criteria], Criteria] = None,

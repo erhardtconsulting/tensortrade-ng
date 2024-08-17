@@ -29,7 +29,7 @@ class AbstractRenderer(Component):
     """A component for rendering a view of the environment at each step of
     an episode."""
 
-    registered_name = "abstract_renderer"
+    registered_name = "renderer"
 
     def __init__(self):
         super().__init__()

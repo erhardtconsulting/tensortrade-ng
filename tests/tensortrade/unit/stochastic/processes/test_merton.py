@@ -1,10 +1,6 @@
-
-import pytest
-
 from tensortrade.stochastic import merton
 
 
-@pytest.mark.skip("Takes too long.")
 def test_shape():
     n = 50
     frame = merton(

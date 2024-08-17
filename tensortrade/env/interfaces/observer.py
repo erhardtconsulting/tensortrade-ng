@@ -31,7 +31,7 @@ class AbstractObserver(Component, TimeIndexed):
     """A component to generate an observation at each step of an episode.
     """
 
-    registered_name = "abstract_observer"
+    registered_name = "observer"
 
     @property
     @abstractmethod

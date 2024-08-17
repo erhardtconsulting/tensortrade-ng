@@ -35,7 +35,7 @@ class SimpleProfit(AbstractRewardScheme):
         The size of the look back window for computing the reward.
     """
 
-    registered_name = "simple_profit"
+    registered_name = "simple"
 
     def __init__(self, window_size: int = 1):
         self._window_size = self.default('window_size', window_size)

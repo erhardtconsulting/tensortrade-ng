@@ -39,7 +39,7 @@ class RiskAdjustedReturns(AbstractRewardScheme):
         The size of the look back window for computing the reward.
     """
 
-    registered_name = "risk_adjusted_returns"
+    registered_name = "risk-adjusted"
 
     def __init__(self,
                  return_algorithm: str = 'sharpe',
@@ -60,7 +60,7 @@ class RiskAdjustedReturns(AbstractRewardScheme):
         self._target_returns = self.default('target_returns', target_returns)
         self._window_size = self.default('window_size', window_size)
 
-    def get_reward(self, portfolio: Portfolio) -> float:
+    def reward(self, portfolio: Portfolio) -> float:
         """Computes the reward corresponding to the selected risk-adjusted return metric.
 
         Parameters

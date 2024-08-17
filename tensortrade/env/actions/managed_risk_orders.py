@@ -55,6 +55,8 @@ class ManagedRiskOrders(AbstractActionScheme):
         The minimum value when placing an order, calculated in absolute order value.
     """
 
+    registered_name = "managed-risk"
+
     def __init__(self,
                  stop: List[float] = [0.02, 0.04, 0.06],
                  take: List[float] = [0.01, 0.02, 0.03],

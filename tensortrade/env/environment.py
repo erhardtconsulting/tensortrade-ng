@@ -89,7 +89,8 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         self.render_mode = 'human'
 
         for c in self.components.values():
-            c.clock = self.clock
+            if c is not None:
+                c.clock = self.clock
 
         self.action_space = action_scheme.action_space
         self.observation_space = observer.observation_space
@@ -134,7 +135,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         self.action_scheme.perform(self, action)
 
         obs = self.observer.observe(self)
-        reward = self.reward_scheme.reward(self)
+        reward = self.reward_scheme.reward(self.action_scheme.portfolio)
         terminated = self.stopper.stop(self)
         truncated = False
         info = self.informer.info(self)

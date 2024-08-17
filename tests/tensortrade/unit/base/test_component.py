@@ -1,11 +1,9 @@
-
 from abc import abstractmethod
 
 from tensortrade.core import Component, TradingContext
 
 
 class DataMessageComponent(Component):
-
     registered_name = "messages"
 
     @abstractmethod
@@ -37,7 +35,6 @@ class WorthMessageComponent(DataMessageComponent):
 
 
 class PlanComponent(Component):
-
     registered_name = "plans"
 
     @abstractmethod
@@ -76,7 +73,6 @@ class LosePlanComponent(PlanComponent):
 
 
 def test_no_context_injected_outside_with():
-
     name = 'TensorTrade'
     value = 'the time and effort.'
     instance = WorthMessageComponent(name=name, value=value)
@@ -92,9 +88,7 @@ config = {
 
 
 def test_injects_concrete_tensor_trade_component_with_context():
-
     with TradingContext(config):
-
         name = 'TensorTrade'
         value = 'the time and effort.'
         instance = WorthMessageComponent(name=name, value=value)
@@ -103,7 +97,6 @@ def test_injects_concrete_tensor_trade_component_with_context():
 
 
 def test_inject_multiple_components_with_context():
-
     with TradingContext(config):
         name = 'TensorTrade'
         value = 'the time and effort.'
@@ -139,9 +132,6 @@ def test_injects_component_space():
 
 def test_only_name_registered_component_space():
     c = {
-        'actions': {
-            'n_actions': 20
-        },
         'messages': {
             'msg_var': 0,
             'valid': ['Hello', 'World']

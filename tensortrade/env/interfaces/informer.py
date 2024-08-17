@@ -29,7 +29,7 @@ class AbstractInformer(Component, TimeIndexed):
     """A component to provide information at each step of an episode.
     """
 
-    registered_name = "abstract_informer"
+    registered_name = "informer"
 
     @abstractmethod
     def info(self, env: TradingEnv) -> Dict[str, Any]:

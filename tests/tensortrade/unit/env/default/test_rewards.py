@@ -1,30 +1,34 @@
-
-import pytest
-import numpy as np
-import pandas as pd
+import unittest
 from collections import OrderedDict
 
-import tensortrade.env.rewards.abstract as rewards
+import numpy as np
+import pandas as pd
+import pytest
 
+import tensortrade.env.rewards as rewards
 from tensortrade.core import TradingContext
-from tensortrade.oms.wallets import Portfolio
+from tensortrade.env.interfaces import AbstractRewardScheme
 from tensortrade.oms.instruments import USD
+from tensortrade.oms.wallets import Portfolio
 
 
-class TestTensorTradeRewardScheme:
+class TestTensorTradeRewardScheme(unittest.TestCase):
 
-    def setup(self):
+    def setUp(self):
         self.config = {
             'base_instrument': 'USD',
             'instruments': 'ETH',
             'rewards': {
                 'size': 0
+            },
+            'simple': {
+                'size': 0
             }
         }
 
-        class ConcreteRewardScheme(rewards.TensorTradeRewardScheme):
+        class ConcreteRewardScheme(AbstractRewardScheme):
 
-            def get_reward(self, env) -> float:
+            def reward(self, portfolio) -> float:
                 pass
 
         self.concrete_class = ConcreteRewardScheme
@@ -45,7 +49,7 @@ class TestTensorTradeRewardScheme:
 
             reward_scheme = rewards.get('simple')
 
-            assert reward_scheme.registered_name == "rewards"
+            assert reward_scheme.registered_name == 'simple'
             assert hasattr(reward_scheme.context, 'size')
             assert reward_scheme.context.size == 0
             assert reward_scheme.context['size'] == 0
@@ -80,11 +84,11 @@ class TestSimpleProfit:
         pct_chg = net_worths.pct_change()
 
         reward_scheme = rewards.SimpleProfit()
-        assert reward_scheme.get_reward(portfolio) == pct_chg.iloc[-1]  # default window size 1
+        assert reward_scheme.reward(portfolio) == pct_chg.iloc[-1]  # default window size 1
 
         reward_scheme._window_size = 3
         reward = ((1 + pct_chg.iloc[-1]) * (1 + pct_chg.iloc[-2]) * (1 + pct_chg.iloc[-3])) - 1
-        assert reward_scheme.get_reward(portfolio) == reward
+        assert reward_scheme.reward(portfolio) == reward
 
 
 class TestRiskAdjustedReturns:

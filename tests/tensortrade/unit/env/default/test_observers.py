@@ -1,5 +1,4 @@
-
-from tensortrade.env.observers.default import _create_internal_streams, _create_wallet_source
+from tensortrade.env.utils import create_internal_streams, create_wallet_source
 from tensortrade.feed.core import DataFeed, Stream
 from tensortrade.oms.exchanges import Exchange
 from tensortrade.oms.services.execution.simulated import execute_order
@@ -55,7 +54,7 @@ def test_create_internal_data_feed():
         Wallet(ex2, 3 * LTC),
     ])
 
-    feed = DataFeed(_create_internal_streams(portfolio))
+    feed = DataFeed(create_internal_streams(portfolio))
 
     data = {
         "bitfinex:/USD-BTC": 7000,
@@ -113,7 +112,7 @@ def test_exchange_with_wallets_feed():
     )
 
     wallet_btc = Wallet(ex1, 10 * BTC)
-    wallet_btc_ds = _create_wallet_source(wallet_btc)
+    wallet_btc_ds = create_wallet_source(wallet_btc)
 
     wallet_usd = Wallet(ex2, 1000 * USD)
     wallet_usd.withdraw(
@@ -124,7 +123,7 @@ def test_exchange_with_wallets_feed():
         quantity=Quantity(USD, 400, path_id="fake_id"),
         reason="test"
     )
-    wallet_usd_ds = _create_wallet_source(wallet_usd, include_worth=False)
+    wallet_usd_ds = create_wallet_source(wallet_usd, include_worth=False)
 
     streams = ex1.streams() + ex2.streams() + wallet_btc_ds + wallet_usd_ds
     feed = DataFeed(streams)

@@ -54,7 +54,7 @@ class AbstractActionScheme(Component, TimeIndexed):
         Gets the list of orders to be submitted for the given action.
     """
 
-    registered_name = "abstract_action_scheme"
+    registered_name = "action_scheme"
 
     def __init__(self) -> None:
         super().__init__()

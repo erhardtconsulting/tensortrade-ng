@@ -28,7 +28,7 @@ class AbstractStopper(Component, TimeIndexed):
     stopping criteria.
     """
 
-    registered_name = "abstract_stopper"
+    registered_name = "stopper"
 
     @abstractmethod
     def stop(self, env: TradingEnv) -> bool:
