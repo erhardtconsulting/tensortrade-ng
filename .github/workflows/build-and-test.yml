@@ -24,4 +24,4 @@ jobs:
 
       - name: Test with pytest
         run: |
-          pytest --doctest-modules --junitxml=junit/test-results.xml --cov=ct_bot --cov-report=xml --cov-report=html
+          pytest --doctest-modules --junitxml=junit/test-results.xml --cov=tensortrade --cov-report=xml --cov-report=html
