@@ -31,3 +31,7 @@ venv
 # documentation
 /docs/build
 /docs/source/api
+
+# coverate
+/coverage.xml
+/junit

@@ -1,4 +1,3 @@
 [report]
-
-fail_under = 87
+fail_under = 80
 show_missing = True

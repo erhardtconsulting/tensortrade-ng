@@ -24,7 +24,7 @@ project = 'TensorTrade-NG'
 author = 'Simon Erhardt'
 github_url = 'https://github.com/erhardtconsulting/tensortrade-ng'
 
-with open(os.path.join('../../', 'tensortrade', 'version.py'), 'r') as filehandle:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../', 'tensortrade', 'version.py'), 'r') as filehandle:
     for line in filehandle:
         if line.startswith('__version__'):
             __version__ = line[15:-2]
