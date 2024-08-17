@@ -1,21 +1,23 @@
-TensorTrade
+TensorTrade-NG
 -----------
 
 |Logo|
 
-`TensorTrade`_ is an open source Python framework for building,
+`TensorTrade-NG`_ is an open source Python framework for building,
 training, evaluating, and deploying robust trading algorithms using
 reinforcement learning. The framework focuses on being highly composable
 and extensible, to allow the system to scale from simple trading
 strategies on a single CPU, to complex investment strategies run on a
 distribution of HPC machines.
 
-Under the hood, the framework uses many of the APIs from existing
-machine learning libraries to maintain high quality data pipelines and
-learning models. One of the main goals of TensorTrade is to enable fast
-experimentation with algorithmic trading strategies, by leveraging the
-existing tools and pipelines provided by ``numpy``, ``pandas``, ``gym``,
-``keras``, and ``tensorflow``.
+Under the hood, the framework uses many of the APIs from existing machine
+learning libraries to maintain high quality data pipelines and learning models.
+One of the main goals of TensorTrade is to enable fast experimentation
+with algorithmic trading strategies, by leveraging the existing tools
+and pipelines provided by `numpy`, `pandas` and `gymnasium`. The idea
+behind Tensorflow-NG is not to implement all the machine learning stuff
+itself. But to provide a solid framework that makes it possible to quickly
+provide a working environment for other tools such as `Stable-Baselines3`_.
 
 Every piece of the framework is split up into re-usable components,
 allowing you to take advantage of the general use components built by
@@ -55,7 +57,8 @@ functions), and existing modules provide ample examples. To be able to
 easily create new modules allows for total expressiveness, making
 TensorTrade suitable for advanced research and production use.
 
-.. _TensorTrade: https://github.com/tensortrade-org/tensortrade
+.. _Stable-Baselines3: https://stable-baselines3.readthedocs.io
+.. _TensorTrade-NG: https://github.com/erhardtconsulting/tensortrade-ng
 .. _Medium tutorial: https://medium.com/@notadamking/trade-smarter-w-reinforcement-learning-a5e91163f315
 .. _Keras' guiding principles: https://github.com/keras-team/keras
 .. _Train and Evaluate using Ray: examples/train_and_evaluate_using_ray.html
