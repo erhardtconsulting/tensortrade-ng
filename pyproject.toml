@@ -64,7 +64,8 @@ docs = [
   "ipython>=8.26.0"
 ]
 jlab = [
-  "ipython>=8.26.0"
+  "ipython>=8.26.0",
+  "ipykernel>=6.29.5"
 ]
 
 [project.urls]
