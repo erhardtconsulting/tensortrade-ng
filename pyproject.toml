@@ -6,16 +6,13 @@ build-backend = "setuptools.build_meta"
 name = "tensortrade-ng"
 dynamic = ["version"]
 dependencies = [
-  "numpy>=1.17.0",
-  "pandas>=0.25.0",
-  "gymnasium>=0.28.1",
-  "pyyaml>=5.1.2",
-  "stochastic>=0.6.0",
-  "tensorflow>=2.7.0",
-  "ipython>=7.12.0",
-  "matplotlib>=3.1.1",
-  "plotly>=4.5.0",
-  "deprecated>=1.2.13"
+  "numpy>=2.1.0",
+  "pandas>=2.2.2",
+  "gymnasium>=0.29.1",
+  "pyyaml>=6.0.2",
+  "matplotlib>=3.9.2",
+  "plotly>=5.23.0",
+  "deprecated>=1.2.14"
 ]
 requires-python = ">=3.12"
 authors = [
@@ -64,7 +61,10 @@ docs = [
   "nbsphinx_link",
   "recommonmark",
   "sphinx_markdown_tables",
-  "ipykernel"
+  "ipython>=8.26.0"
+]
+jlab = [
+  "ipython>=8.26.0"
 ]
 
 [project.urls]

@@ -8,6 +8,5 @@ from tensortrade.oms import (
     services
 )
 from . import env
-from . import stochastic
 
 from .version import __version__
