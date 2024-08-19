@@ -7,6 +7,7 @@
 dist
 build
 tags
+.jupyter
 
 # test-related
 .coverage
@@ -32,7 +33,7 @@ venv
 /docs/build
 /docs/source/api
 
-# coverate
+# coverage
 /coverage.xml
 /junit
 

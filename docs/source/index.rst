@@ -96,7 +96,8 @@ TensorTrade suitable for advanced research and production use.
     :maxdepth: 1
     :caption: Tutorials
 
-    tutorials/ray.md
+    tutorials/jupyterlab.md
+    tutorials/tutorial.ipynb
 
 
 .. toctree::

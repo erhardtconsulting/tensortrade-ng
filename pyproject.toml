@@ -61,11 +61,15 @@ docs = [
   "nbsphinx_link",
   "recommonmark",
   "sphinx_markdown_tables",
-  "ipython>=8.26.0"
+  "ipython>=8.26.0",
+  "pandoc>=2.4.0"
 ]
 jlab = [
   "ipython>=8.26.0",
-  "ipykernel>=6.29.5"
+  "ipykernel>=6.29.5",
+  "ipywidgets>=8.1.3",
+  "stable_baselines3>=2.3.2",
+  "ta>=0.11.0"
 ]
 
 [project.urls]
