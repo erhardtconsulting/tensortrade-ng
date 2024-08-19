@@ -61,8 +61,7 @@ docs = [
   "nbsphinx_link",
   "recommonmark",
   "sphinx_markdown_tables",
-  "ipython>=8.26.0",
-  "pandoc>=2.4.0"
+  "ipython>=8.26.0"
 ]
 jlab = [
   "ipython>=8.26.0",
