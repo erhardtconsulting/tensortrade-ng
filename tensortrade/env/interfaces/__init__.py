@@ -11,7 +11,6 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-from tensortrade.env.interfaces.action import AbstractActionScheme
 from tensortrade.env.interfaces.observer import AbstractObserver
 from tensortrade.env.interfaces.reward import AbstractRewardScheme
 from tensortrade.env.interfaces.renderer import AbstractRenderer

@@ -17,11 +17,13 @@ import typing
 
 from gymnasium.spaces import Discrete
 
-from tensortrade.env.interfaces import AbstractActionScheme
+from tensortrade.env.actions.abstract import AbstractActionScheme
 from tensortrade.oms.orders import proportion_order
 
 if typing.TYPE_CHECKING:
     from typing import List
+
+    from gymnasium.spaces import Space
 
     from tensortrade.oms.orders import Order
     from tensortrade.oms.wallets import Portfolio, Wallet
@@ -50,14 +52,14 @@ class BSH(AbstractActionScheme):
         self.action = 0
 
     @property
-    def action_space(self):
+    def action_space(self) -> Space:
         return Discrete(2)
 
     def attach(self, listener):
         self.listeners += [listener]
         return self
 
-    def get_orders(self, action: int, portfolio: Portfolio) -> List[Order]:
+    def get_orders(self, action: int) -> List[Order]:
         order = None
 
         if abs(action - self.action) > 0:
@@ -67,7 +69,7 @@ class BSH(AbstractActionScheme):
             if src.balance == 0:  # We need to check, regardless of the proposed order, if we have balance in 'src'
                 return []  # Otherwise just return an empty order list
 
-            order = proportion_order(portfolio, src, tgt, 1.0)
+            order = proportion_order(self.trading_env.portfolio, src, tgt, 1.0)
             self.action = action
 
         for listener in self.listeners:

@@ -20,7 +20,7 @@ from tensortrade.env.actions.simple_orders import SimpleOrders
 from tensortrade.env.actions.managed_risk_orders import ManagedRiskOrders
 
 if typing.TYPE_CHECKING:
-    from tensortrade.env import AbstractActionScheme
+    from tensortrade.env.actions.abstract import AbstractActionScheme
 
 _registry = {
     'bsh': BSH,

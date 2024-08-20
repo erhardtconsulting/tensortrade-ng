@@ -20,7 +20,7 @@ from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
 
 if typing.TYPE_CHECKING:
-    from tensortrade.env.interfaces import TradingEnv
+    from tensortrade.env import TradingEnv
 
 
 class AbstractStopper(Component, TimeIndexed):

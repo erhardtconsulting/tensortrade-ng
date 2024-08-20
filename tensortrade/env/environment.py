@@ -25,9 +25,12 @@ import pandas as pd
 
 from tensortrade.core import TimeIndexed, Clock, Component
 from tensortrade.env.interfaces import AbstractObserver
+from tensortrade.oms.orders import Broker
 
 if typing.TYPE_CHECKING:
     from typing import Dict, Tuple, Any
+
+    from gymnasium.core import ActType
 
     from tensortrade.env.interfaces import (
         AbstractActionScheme,
@@ -36,6 +39,7 @@ if typing.TYPE_CHECKING:
         AbstractInformer,
         AbstractStopper
     )
+    from tensortrade.oms.wallets import Portfolio
 
 
 class TradingEnv(gymnasium.Env, TimeIndexed):
@@ -65,6 +69,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
     episode_id: str = None
 
     def __init__(self,
+                 portfolio: Portfolio,
                  action_scheme: AbstractActionScheme,
                  reward_scheme: AbstractRewardScheme,
                  observer: AbstractObserver,
@@ -76,7 +81,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
                  random_start_pct: float = 0.00,
                  **kwargs) -> None:
         super().__init__()
-        self.clock = Clock()
+
 
         self.action_scheme = action_scheme
         self.reward_scheme = reward_scheme
@@ -88,9 +93,20 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         self.random_start_pct = random_start_pct
         self.render_mode = 'human'
 
-        for c in self.components.values():
-            if c is not None:
-                c.clock = self.clock
+
+        self._clock = Clock()
+        self._broker = Broker()
+        self._portfolio = portfolio
+
+        # init portfolio
+        self._portfolio.clock = self._clock
+
+        # init action scheme
+        self.action_scheme.trading_env = self
+
+        #for c in self.components.values():
+        #    if c is not None:
+        #        c.clock = self.clock
 
         self.action_space = action_scheme.action_space
         self.observation_space = observer.observation_space
@@ -99,6 +115,18 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         if self._enable_logger:
             self.logger = logging.getLogger(kwargs.get('logger_name', __name__))
             self.logger.setLevel(kwargs.get('log_level', logging.DEBUG))
+
+    @property
+    def clock(self) -> Clock:
+        return self._clock
+
+    @property
+    def portfolio(self) -> Portfolio:
+        return self._portfolio
+
+    @property
+    def broker(self) -> Broker:
+        return self._broker
 
     @property
     def components(self) -> Dict[str, Component]:
@@ -132,10 +160,10 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         dict
             The information gathered after completing the step.
         """
-        self.action_scheme.perform(self, action)
+        self.action_scheme.perform_action(action)
 
         obs = self.observer.observe(self)
-        reward = self.reward_scheme.reward(self.action_scheme.portfolio)
+        reward = self.reward_scheme.reward(self.portfolio)
         terminated = self.stopper.stop(self)
         truncated = False
         info = self.informer.info(self)
@@ -158,16 +186,24 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         else:
             random_start = 0
 
+        # reset env state
         self.episode_id = str(uuid.uuid4())
-        self.clock.reset()
+        self._clock.reset()
+        self._portfolio.reset()
+        self._broker.reset()
 
-        for c in self.components.values():
-            if hasattr(c, "reset"):
-                if isinstance(c, AbstractObserver):
-                    c.reset(random_start=random_start)
-                else:
-                    c.reset()
+        # reset component state
+        self.action_scheme.reset()
+        self.observer.reset(random_start=random_start)
+        self.reward_scheme.reset()
+        if self.stopper is not None:
+            self.stopper.reset()
+        if self.informer is not None:
+            self.informer.reset()
+        if self.renderer is not None:
+            self.renderer.reset()
 
+        # return new observation
         obs = self.observer.observe(self)
         info = self.informer.info(self)
 

@@ -69,6 +69,19 @@ class Portfolio(Component, TimedIdentifiable):
         self._performance = None
         self._keys = None
 
+    @TimedIdentifiable.clock.setter
+    def clock(self, clock: "Clock") -> None:
+        """Sets the clock associated with this object.
+
+        In addition, the `created_at` attribute is set according to the new clock. Then it's sent to all exchanges.
+        :param clock: The new clock.
+        :type clock: :class:`Clock`
+        """
+        TimedIdentifiable.clock.fset(self, clock)
+        for exchange in self.exchanges:
+            exchange.clock = clock
+
+
     @property
     def wallets(self) -> 'List[Wallet]':
         """All the wallets in the portfolio. (`List[Wallet]`, read-only)"""

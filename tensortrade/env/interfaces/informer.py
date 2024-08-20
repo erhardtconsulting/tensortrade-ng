@@ -22,7 +22,7 @@ from tensortrade.core.base import TimeIndexed
 if typing.TYPE_CHECKING:
     from typing import Dict, Any
 
-    from tensortrade.env.interfaces import TradingEnv
+    from tensortrade.env import TradingEnv
 
 
 class AbstractInformer(Component, TimeIndexed):

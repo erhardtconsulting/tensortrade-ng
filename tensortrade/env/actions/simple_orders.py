@@ -18,7 +18,7 @@ from itertools import product
 
 from gymnasium.spaces import Discrete
 
-from tensortrade.env.interfaces import AbstractActionScheme
+from tensortrade.env.actions.abstract import AbstractActionScheme
 from tensortrade.oms.orders import TradeType, TradeSide
 
 if typing.TYPE_CHECKING:
@@ -28,7 +28,6 @@ if typing.TYPE_CHECKING:
 
     from tensortrade.oms.orders import Order, OrderListener
     from tensortrade.oms.orders.criteria import Criteria
-    from tensortrade.oms.wallets import Portfolio
 
 
 class SimpleOrders(AbstractActionScheme):
@@ -97,15 +96,13 @@ class SimpleOrders(AbstractActionScheme):
                 [TradeSide.BUY, TradeSide.SELL]
             )
             self.actions = list(self.actions)
-            self.actions = list(product(self.portfolio.exchange_pairs, self.actions))
+            self.actions = list(product(self.trading_env.portfolio.exchange_pairs, self.actions))
             self.actions = [None] + self.actions
 
             self._action_space = Discrete(len(self.actions))
         return self._action_space
 
-    def get_orders(self,
-                   action: int,
-                   portfolio: Portfolio) -> List[Order]:
+    def get_orders(self, action: int) -> List[Order]:
 
         if action == 0:
             return []
@@ -113,7 +110,7 @@ class SimpleOrders(AbstractActionScheme):
         (ep, (criteria, proportion, duration, side)) = self.actions[action]
 
         instrument = side.instrument(ep.pair)
-        wallet = portfolio.get_wallet(ep.exchange.id, instrument=instrument)
+        wallet = self.trading_env.portfolio.get_wallet(ep.exchange.id, instrument=instrument)
 
         balance = wallet.balance.as_float()
         size = (balance * proportion)
@@ -122,7 +119,7 @@ class SimpleOrders(AbstractActionScheme):
         quantity = (size * instrument).quantize()
 
         if size < 10 ** -instrument.precision \
-                or size < self.min_order_pct * portfolio.net_worth \
+                or size < self.min_order_pct * self.trading_env.portfolio.net_worth \
                 or size < self.min_order_abs:
             return []
 
@@ -135,7 +132,7 @@ class SimpleOrders(AbstractActionScheme):
             quantity=quantity,
             criteria=criteria,
             end=self.clock.step + duration if duration else None,
-            portfolio=portfolio
+            portfolio=self.trading_env.portfolio
         )
 
         if self._order_listener is not None:

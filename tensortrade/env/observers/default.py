@@ -168,6 +168,3 @@ class DefaultObserver(AbstractObserver):
         self.history.reset()
         self.feed.reset(random_start)
         self.warmup()
-
-
-

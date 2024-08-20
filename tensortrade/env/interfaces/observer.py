@@ -25,7 +25,7 @@ if typing.TYPE_CHECKING:
 
     from gymnasium import Space
 
-    from tensortrade.env.interfaces import TradingEnv
+    from tensortrade.env import TradingEnv
 
 class AbstractObserver(Component, TimeIndexed):
     """A component to generate an observation at each step of an episode.

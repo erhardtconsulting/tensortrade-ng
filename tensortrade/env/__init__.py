@@ -96,6 +96,7 @@ def create(portfolio: Portfolio,
 
     # create env
     return TradingEnv(
+        portfolio=portfolio,
         action_scheme=action_scheme,
         reward_scheme=reward_scheme,
         observer=observer,

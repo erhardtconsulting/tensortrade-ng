@@ -18,7 +18,7 @@ from itertools import product
 
 from gymnasium.spaces import Discrete
 
-from tensortrade.env.interfaces import AbstractActionScheme
+from tensortrade.env.actions.abstract import AbstractActionScheme
 from tensortrade.oms.orders import TradeType, TradeSide, risk_managed_order
 
 if typing.TYPE_CHECKING:
@@ -27,7 +27,6 @@ if typing.TYPE_CHECKING:
     from gymnasium import Space
 
     from tensortrade.oms.orders import Order, OrderListener
-    from tensortrade.oms.wallets import Portfolio
 
 class ManagedRiskOrders(AbstractActionScheme):
     """A discrete action scheme that determines actions based on managing risk,
@@ -98,13 +97,13 @@ class ManagedRiskOrders(AbstractActionScheme):
                 [TradeSide.BUY, TradeSide.SELL]
             )
             self.actions = list(self.actions)
-            self.actions = list(product(self.portfolio.exchange_pairs, self.actions))
+            self.actions = list(product(self.trading_env.portfolio.exchange_pairs, self.actions))
             self.actions = [None] + self.actions
 
             self._action_space = Discrete(len(self.actions))
         return self._action_space
 
-    def get_orders(self, action: int, portfolio: Portfolio) -> List[Order]:
+    def get_orders(self, action: int) -> List[Order]:
         if action == 0:
             return []
 
@@ -113,7 +112,7 @@ class ManagedRiskOrders(AbstractActionScheme):
         side = TradeSide(side)
 
         instrument = side.instrument(ep.pair)
-        wallet = portfolio.get_wallet(ep.exchange.id, instrument=instrument)
+        wallet = self.trading_env.portfolio.get_wallet(ep.exchange.id, instrument=instrument)
 
         balance = wallet.balance.as_float()
         size = (balance * proportion)
@@ -121,7 +120,7 @@ class ManagedRiskOrders(AbstractActionScheme):
         quantity = (size * instrument).quantize()
 
         if size < 10 ** -instrument.precision \
-                or size < self.min_order_pct * portfolio.net_worth \
+                or size < self.min_order_pct * self.trading_env.portfolio.net_worth \
                 or size < self.min_order_abs:
             return []
 
@@ -132,7 +131,7 @@ class ManagedRiskOrders(AbstractActionScheme):
             'quantity': quantity,
             'down_percent': stop,
             'up_percent': take,
-            'portfolio': portfolio,
+            'portfolio': self.trading_env.portfolio,
             'trade_type': self._trade_type,
             'end': self.clock.step + duration if duration else None
         }
