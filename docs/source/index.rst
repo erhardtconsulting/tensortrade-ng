@@ -138,6 +138,7 @@ TensorTrade suitable for advanced research and production use.
     :caption: Agents
 
     agents/overview.md
+    agents/well_performing_agent.md
 
 
 .. toctree::
