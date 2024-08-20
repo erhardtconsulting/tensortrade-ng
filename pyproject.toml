@@ -49,6 +49,7 @@ classifiers = [
 
 [project.optional-dependencies]
 tests = [
+  "ipython>=8.26.0",
   "pytest>=5.1.1",
   "pytest-cov>=5.0.0",
   "ta>=0.4.7"

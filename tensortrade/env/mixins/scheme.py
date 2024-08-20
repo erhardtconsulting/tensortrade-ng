@@ -28,7 +28,7 @@ class SchemeMixin:
     through a property to enforce this initialization check.
 
     :param _trading_env: A :class:`TradingEnv` instance, defaults to None
-    :type _trading_env: :class:`TradingEnv`, optional
+    :type _trading_env: Optional[TradingEnv]
     """
     def __init__(self):
         self._trading_env: Optional[TradingEnv] = None
@@ -41,7 +41,7 @@ class SchemeMixin:
         If `_trading_env` is `None`, a `ValueError` is raised to prevent the use of an uninitialized :class:`TradingEnv`.
 
         :return: The initialized :class:`TradingEnv` instance.
-        :rtype: :class:`TradingEnv`
+        :rtype: TradingEnv
         :raises ValueError: If `_trading_env` is not initialized.
         """
         if self._trading_env is None:
@@ -55,6 +55,6 @@ class SchemeMixin:
         This setter allows for the initialization of the `_trading_env` attribute.
 
         :param value: The `TradingEnv` instance to be assigned to `_trading_env`.
-        :type value: :class:`TradingEnv`
+        :type value: TradingEnv
         """
         self._trading_env = value

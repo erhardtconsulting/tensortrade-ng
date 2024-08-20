@@ -19,7 +19,6 @@ from abc import abstractmethod
 from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
 from tensortrade.env.mixins.scheme import SchemeMixin
-from tensortrade.oms.orders import Broker
 
 if typing.TYPE_CHECKING:
     from typing import List
@@ -28,40 +27,25 @@ if typing.TYPE_CHECKING:
     from gymnasium.spaces import Space
 
     from tensortrade.oms.orders import Order
-    from tensortrade.oms.wallets import Portfolio
 
 class AbstractActionScheme(SchemeMixin, Component, TimeIndexed):
     """An abstract base class for any `ActionScheme` that wants to be
-    compatible with the built in OMS.
+    compatible with the built-in OMS.
 
     The structure of the action scheme is built to make sure that action space
     can be used with the system, provided that the user defines the methods to
     interpret that action.
-
-    Attributes
-    ----------
-    portfolio : Portfolio
-        The portfolio object to be used in defining actions.
-    broker : Broker
-        The broker object to be used for placing orders in the OMS.
-
-    Methods
-    -------
-    perform(env,portfolio)
-        Performs the action on the given environment.
-    get_orders(action,portfolio)
-        Gets the list of orders to be submitted for the given action.
     """
 
     registered_name = "action_scheme"
 
-    def __init__(self) -> None:
-        super().__init__()
-
     @property
     @abstractmethod
     def action_space(self) -> Space:
-        """The action space of the `TradingEnv`. (`Space`, read-only)
+        """The action space of the :class:`TradingEnv`.
+
+        :return: The gymnasium action space of the :class:`TradingEnv`.
+        :rtype: Space
         """
         raise NotImplementedError()
 
@@ -69,8 +53,6 @@ class AbstractActionScheme(SchemeMixin, Component, TimeIndexed):
     def get_orders(self, action: ActType) -> List[Order]:
         """Gets the list of orders to be submitted for the given action.
 
-        Parameters
-        ----------
         :param action: The action to be interpreted.
         :type action: :class:`gymnasium.core.ActType`
         :return: A list of orders to be submitted to the broker.
@@ -93,4 +75,6 @@ class AbstractActionScheme(SchemeMixin, Component, TimeIndexed):
         self.trading_env.broker.update()
 
     def reset(self) -> None:
+        """Performs a reset on the action scheme. Will be called when :class:`TradingEnv` is reset.
+        """
         pass

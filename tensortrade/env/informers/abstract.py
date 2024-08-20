@@ -18,35 +18,27 @@ from abc import abstractmethod
 
 from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
+from tensortrade.env.mixins.scheme import SchemeMixin
 
 if typing.TYPE_CHECKING:
     from typing import Dict, Any
 
-    from tensortrade.env import TradingEnv
 
-
-class AbstractInformer(Component, TimeIndexed):
+class AbstractInformer(SchemeMixin, Component, TimeIndexed):
     """A component to provide information at each step of an episode.
     """
 
     registered_name = "informer"
 
     @abstractmethod
-    def info(self, env: TradingEnv) -> Dict[str, Any]:
-        """Provides information at a given step of an episode.
+    def info(self) -> Dict[str, Any]:
+        """Provides information (the info dict) at a given step of an episode.
 
-        Parameters
-        ----------
-        env: 'TradingEnv'
-            The trading environment.
-
-        Returns
-        -------
-        dict:
-            A dictionary of information about the portfolio and net worth.
+        :return: A dictionary of information about the portfolio and net worth.
+        :rtype: Dict[str, Any]
         """
         raise NotImplementedError()
 
     def reset(self):
-        """Resets the informer."""
+        """Performs a reset on the informer scheme. Will be called when :class:`TradingEnv` is reset."""
         pass

@@ -26,7 +26,7 @@ if typing.TYPE_CHECKING:
     from gymnasium.spaces import Space
 
     from tensortrade.oms.orders import Order
-    from tensortrade.oms.wallets import Portfolio, Wallet
+    from tensortrade.oms.wallets import Wallet
 
 
 class BSH(AbstractActionScheme):

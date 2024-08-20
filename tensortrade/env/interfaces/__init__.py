@@ -14,5 +14,4 @@
 from tensortrade.env.interfaces.observer import AbstractObserver
 from tensortrade.env.interfaces.reward import AbstractRewardScheme
 from tensortrade.env.interfaces.renderer import AbstractRenderer
-from tensortrade.env.interfaces.informer import AbstractInformer
 from tensortrade.env.interfaces.stopper import AbstractStopper

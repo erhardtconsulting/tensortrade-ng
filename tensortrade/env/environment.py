@@ -30,13 +30,12 @@ from tensortrade.oms.orders import Broker
 if typing.TYPE_CHECKING:
     from typing import Dict, Tuple, Any
 
-    from gymnasium.core import ActType
+    from tensortrade.env.actions.abstract import AbstractActionScheme
+    from tensortrade.env.informers.abstract import AbstractInformer
 
     from tensortrade.env.interfaces import (
-        AbstractActionScheme,
         AbstractRewardScheme,
         AbstractRenderer,
-        AbstractInformer,
         AbstractStopper
     )
     from tensortrade.oms.wallets import Portfolio
@@ -103,11 +102,10 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
         # init action scheme
         self.action_scheme.trading_env = self
+        if self.informer is not None:
+            self.informer.trading_env = self
 
-        #for c in self.components.values():
-        #    if c is not None:
-        #        c.clock = self.clock
-
+        # set action and observation space
         self.action_space = action_scheme.action_space
         self.observation_space = observer.observation_space
 
@@ -166,7 +164,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         reward = self.reward_scheme.reward(self.portfolio)
         terminated = self.stopper.stop(self)
         truncated = False
-        info = self.informer.info(self)
+        info = self.informer.info()
 
         self.clock.increment()
 
@@ -205,7 +203,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
         # return new observation
         obs = self.observer.observe(self)
-        info = self.informer.info(self)
+        info = self.informer.info()
 
         self.clock.increment()
 
