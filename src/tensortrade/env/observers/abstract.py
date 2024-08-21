@@ -19,15 +19,14 @@ from abc import abstractmethod
 
 from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
+from tensortrade.env.mixins.scheme import SchemeMixin
 
 if typing.TYPE_CHECKING:
     import numpy as np
 
     from gymnasium import Space
 
-    from tensortrade.env import TradingEnv
-
-class AbstractObserver(Component, TimeIndexed):
+class AbstractObserver(SchemeMixin, Component, TimeIndexed):
     """A component to generate an observation at each step of an episode.
     """
 
@@ -36,23 +35,19 @@ class AbstractObserver(Component, TimeIndexed):
     @property
     @abstractmethod
     def observation_space(self) -> Space:
-        """The observation space of the `TradingEnv`. (`Space`, read-only)
+        """The observation space of the :class:`TradingEnv`.
+
+        :return: The gymnasium observation space of the :class:`TradingEnv`.
+        :rtype: Space
         """
         raise NotImplementedError()
 
     @abstractmethod
-    def observe(self, env: TradingEnv) -> np.array:
-        """Gets the observation at the current step of an episode
+    def observe(self) -> np.array:
+        """Gets the observation at the current step of an episode.
 
-        Parameters
-        ----------
-        env: 'TradingEnv'
-            The trading environment.
-
-        Returns
-        -------
-        `np.array`
-            The current observation of the environment.
+        :return: The current observation of the environment.
+        :rtype: np.array
         """
         raise NotImplementedError()
 

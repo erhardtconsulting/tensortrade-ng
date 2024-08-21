@@ -24,13 +24,13 @@ import numpy as np
 import pandas as pd
 
 from tensortrade.core import TimeIndexed, Clock, Component
-from tensortrade.env.interfaces import AbstractObserver
 from tensortrade.oms.orders import Broker
 
 if typing.TYPE_CHECKING:
     from typing import Dict, Tuple, Any
 
     from tensortrade.env.actions.abstract import AbstractActionScheme
+    from tensortrade.env.observers.abstract import AbstractObserver
     from tensortrade.env.rewards.abstract import AbstractRewardScheme
     from tensortrade.env.stoppers.abstract import AbstractStopper
     from tensortrade.env.informers.abstract import AbstractInformer
@@ -102,6 +102,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
         # init action scheme
         self.action_scheme.trading_env = self
+        self.observer.trading_env = self
         self.reward_scheme.trading_env = self
         if self.stopper is not None:
             self.stopper.trading_env = self
@@ -163,7 +164,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         """
         self.action_scheme.perform_action(action)
 
-        obs = self.observer.observe(self)
+        obs = self.observer.observe()
         reward = self.reward_scheme.reward()
         terminated = self.stopper.stop()
         truncated = False
@@ -205,7 +206,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
             self.renderer.reset()
 
         # return new observation
-        obs = self.observer.observe(self)
+        obs = self.observer.observe()
         info = self.informer.info()
 
         self.clock.increment()

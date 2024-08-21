@@ -18,7 +18,7 @@ import typing
 import numpy as np
 from gymnasium.spaces import Box
 
-from tensortrade.env.interfaces import AbstractObserver
+from tensortrade.env.observers.abstract import AbstractObserver
 from tensortrade.env.utils import create_internal_streams, ObservationHistory
 from tensortrade.feed import Stream, DataFeed
 
@@ -71,6 +71,8 @@ class DefaultObserver(AbstractObserver):
                  window_size: int = 1,
                  min_periods: int = None,
                  **kwargs) -> None:
+        super().__init__()
+
         internal_group = Stream.group(create_internal_streams(portfolio)).rename("internal")
         external_group = Stream.group(feed.inputs).rename("external")
 
@@ -127,7 +129,7 @@ class DefaultObserver(AbstractObserver):
                     obs_row = self.feed.next()["external"]
                     self.history.push(obs_row)
 
-    def observe(self, env: TradingEnv) -> np.array:
+    def observe(self) -> np.array:
         """Observes the environment.
 
         As a consequence of observing the `env`, a new observation is generated
