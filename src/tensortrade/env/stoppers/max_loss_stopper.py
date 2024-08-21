@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import typing
 
-from tensortrade.env.interfaces import AbstractStopper
+from tensortrade.env.stoppers.abstract import AbstractStopper
 
 if typing.TYPE_CHECKING:
     from tensortrade.env.interfaces import TradingEnv
@@ -45,7 +45,7 @@ class MaxLossStopper(AbstractStopper):
         super().__init__()
         self.max_allowed_loss = max_allowed_loss
 
-    def stop(self, env: TradingEnv) -> bool:
-        c1 = env.action_scheme.portfolio.profit_loss > self.max_allowed_loss
-        c2 = not env.observer.has_next()
+    def stop(self) -> bool:
+        c1 = self.trading_env.portfolio.profit_loss > self.max_allowed_loss
+        c2 = not self.trading_env.observer.has_next()
         return c1 or c2

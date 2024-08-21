@@ -13,4 +13,3 @@
 # limitations under the License
 from tensortrade.env.interfaces.observer import AbstractObserver
 from tensortrade.env.interfaces.renderer import AbstractRenderer
-from tensortrade.env.interfaces.stopper import AbstractStopper

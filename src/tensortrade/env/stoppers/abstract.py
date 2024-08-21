@@ -13,17 +13,14 @@
 # limitations under the License
 from __future__ import annotations
 
-import typing
 from abc import abstractmethod
 
-from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
+from tensortrade.core.component import Component
+from tensortrade.env.mixins.scheme import SchemeMixin
 
-if typing.TYPE_CHECKING:
-    from tensortrade.env import TradingEnv
 
-
-class AbstractStopper(Component, TimeIndexed):
+class AbstractStopper(SchemeMixin, Component, TimeIndexed):
     """A component for determining if the environment satisfies a defined
     stopping criteria.
     """
@@ -31,18 +28,10 @@ class AbstractStopper(Component, TimeIndexed):
     registered_name = "stopper"
 
     @abstractmethod
-    def stop(self, env: TradingEnv) -> bool:
+    def stop(self) -> bool:
         """Computes if the environment satisfies the defined stopping criteria.
-
-        Parameters
-        ----------
-        env : `TradingEnv`
-            The trading environment.
-
-        Returns
-        -------
-        bool
-            If the environment should stop or continue.
+        :return: If the environment should stop or continue.
+        :rtype: bool
         """
         raise NotImplementedError()
 

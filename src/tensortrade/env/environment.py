@@ -32,11 +32,11 @@ if typing.TYPE_CHECKING:
 
     from tensortrade.env.actions.abstract import AbstractActionScheme
     from tensortrade.env.rewards.abstract import AbstractRewardScheme
+    from tensortrade.env.stoppers.abstract import AbstractStopper
     from tensortrade.env.informers.abstract import AbstractInformer
 
     from tensortrade.env.interfaces import (
         AbstractRenderer,
-        AbstractStopper
     )
     from tensortrade.oms.wallets import Portfolio
 
@@ -103,6 +103,8 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         # init action scheme
         self.action_scheme.trading_env = self
         self.reward_scheme.trading_env = self
+        if self.stopper is not None:
+            self.stopper.trading_env = self
         if self.informer is not None:
             self.informer.trading_env = self
 
@@ -163,7 +165,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
         obs = self.observer.observe(self)
         reward = self.reward_scheme.reward()
-        terminated = self.stopper.stop(self)
+        terminated = self.stopper.stop()
         truncated = False
         info = self.informer.info()
 
