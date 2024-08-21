@@ -32,12 +32,9 @@ if typing.TYPE_CHECKING:
     from tensortrade.env.actions.abstract import AbstractActionScheme
     from tensortrade.env.observers.abstract import AbstractObserver
     from tensortrade.env.rewards.abstract import AbstractRewardScheme
+    from tensortrade.env.renderers.abstract import AbstractRenderer
     from tensortrade.env.stoppers.abstract import AbstractStopper
     from tensortrade.env.informers.abstract import AbstractInformer
-
-    from tensortrade.env.interfaces import (
-        AbstractRenderer,
-    )
     from tensortrade.oms.wallets import Portfolio
 
 

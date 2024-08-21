@@ -15,7 +15,7 @@ from __future__ import annotations
 
 import typing
 
-from tensortrade.env.interfaces import AbstractRenderer
+from tensortrade.env.renderers.abstract import AbstractRenderer
 
 if typing.TYPE_CHECKING:
     import pandas as pd

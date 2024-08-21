@@ -17,7 +17,7 @@ import logging
 import os
 import typing
 
-from tensortrade.env.interfaces import AbstractRenderer
+from tensortrade.env.renderers.abstract import AbstractRenderer
 from tensortrade.env.renderers.utils import create_auto_file_name, check_path
 
 if typing.TYPE_CHECKING:

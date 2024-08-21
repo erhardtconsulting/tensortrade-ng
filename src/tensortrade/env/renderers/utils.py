@@ -17,7 +17,7 @@ import os
 import typing
 from datetime import datetime
 
-from tensortrade.env.interfaces import AbstractRenderer
+from tensortrade.env.renderers.abstract import AbstractRenderer
 
 if typing.TYPE_CHECKING:
     from collections import OrderedDict

@@ -20,7 +20,7 @@ import plotly.graph_objects as go
 from IPython.display import display, clear_output
 from plotly.subplots import make_subplots
 
-from tensortrade.env.interfaces import AbstractRenderer
+from tensortrade.env.renderers.abstract import AbstractRenderer
 from tensortrade.env.renderers.utils import check_valid_format, check_path, create_auto_file_name
 
 if typing.TYPE_CHECKING:

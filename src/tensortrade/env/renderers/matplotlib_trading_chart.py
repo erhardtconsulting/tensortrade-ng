@@ -22,7 +22,7 @@ import numpy as np
 from matplotlib import style
 from pandas.plotting import register_matplotlib_converters
 
-from tensortrade.env.interfaces import AbstractRenderer
+from tensortrade.env.renderers.abstract import AbstractRenderer
 from tensortrade.env.renderers.utils import create_auto_file_name, check_path, check_valid_format
 from tensortrade.oms.orders import TradeSide
 
