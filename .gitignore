@@ -38,4 +38,4 @@ venv
 /junit
 
 # setuptools_scm
-tensortrade/version.py
+src/tensortrade/__about__.py

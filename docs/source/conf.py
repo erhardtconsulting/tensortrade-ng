@@ -24,7 +24,7 @@ project = 'TensorTrade-NG'
 author = 'Simon Erhardt'
 github_url = 'https://github.com/erhardtconsulting/tensortrade-ng'
 
-with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../', 'tensortrade', 'version.py'), 'r') as filehandle:
+with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../', 'src', 'tensortrade', '__about__.py'), 'r') as filehandle:
     for line in filehandle:
         if line.startswith('__version__'):
             __version__ = line[15:-2]
@@ -63,7 +63,7 @@ extensions = [
 nbsphinx_execute = 'auto'
 
 # apidoc settings
-apidoc_module_dir = '../../tensortrade'
+apidoc_module_dir = '../../src/tensortrade'
 apidoc_output_dir = 'api'
 apidoc_excluded_paths = ['**/*test*']
 apidoc_module_first = True
@@ -258,23 +258,3 @@ except subprocess.CalledProcessError:
 if git_rev:
     git_rev = git_rev.splitlines()[0] + '/'
 
-# nbsphinx_prolog = (
-#     r"""
-# {% if env.metadata[env.docname]['nbsphinx-link-target'] %}
-# {% set docpath = env.metadata[env.docname]['nbsphinx-link-target'] %}
-# {% else %}
-# {% set docpath = env.doc2path(env.docname, core='docs/source/') %}
-# {% endif %}
-#
-# .. only:: html
-#
-#     .. role:: raw-html(raw)
-#         :format: html
-#
-#     .. nbinfo::
-#         This page was generated from `{{ docpath }}`__.
-#
-#     __ https://github.com/erhardtconsulting/tensortrade-ng/blob/
-#         """ +
-#     git_rev + r"{{ docpath }}"
-# )

@@ -1,6 +1,6 @@
 [build-system]
-requires = ["setuptools>=64", "setuptools_scm>=8"]
-build-backend = "setuptools.build_meta"
+requires = ["hatchling", "hatch-vcs"]
+build-backend = "hatchling.build"
 
 [project]
 name = "tensortrade-ng"
@@ -48,13 +48,21 @@ classifiers = [
 ]
 
 [project.optional-dependencies]
-tests = [
+dev = [
+  "hatch>=1.12.0",
+  "hatch-vcs>=0.4.0",
+  "tox>=4.18.0",
+  "tensortrade-ng[test]",
+  "tensortrade-ng[doc]",
+  "tensortrade-ng[jlab]"
+]
+test = [
   "ipython>=8.26.0",
   "pytest>=5.1.1",
   "pytest-cov>=5.0.0",
   "ta>=0.4.7"
 ]
-docs = [
+doc = [
   "sphinx>=7.4.7",
   "sphinx_rtd_theme>=2.0.0",
   "sphinxcontrib-apidoc>=0.5.0",
@@ -78,8 +86,44 @@ Documentation = "https://tensortrade-ng.io"
 Repository = "https://github.com/erhardtconsulting/tensortrade-ng.git"
 Issues = "https://github.com/erhardtconsulting/tensortrade-ng/issues"
 
-[tool.setuptools.packages.find]
-exclude = ["junit"]
+[tool.hatch.build.targets.sdist]
+exclude = [
+  "/.github",
+  "/docs",
+  "/examples",
+  "/tests",
+  "/htmlcov"
+]
 
-[tool.setuptools_scm]
-version_file = "tensortrade/version.py"
+[tool.hatch.build.targets.wheel]
+packages = ["src/tensortrade"]
+
+[tool.hatch.version]
+source = "vcs"
+
+[tool.hatch.build.hooks.vcs]
+version-file = "src/tensortrade/__about__.py"
+
+[tool.hatch.envs.docs]
+features = [
+  "doc"
+]
+[tool.hatch.envs.docs.scripts]
+build = "python -m sphinx -M html docs/source docs/build"
+
+[tool.hatch.envs.hatch-test]
+python = "3.12"
+features = [
+  "test"
+]
+
+[tool.coverage.run]
+omit = [
+  "docs/**",
+  "tests/**",
+  "examples/**"
+]
+
+[tool.coverage.report]
+fail_under = 75.0
+show_missing = true

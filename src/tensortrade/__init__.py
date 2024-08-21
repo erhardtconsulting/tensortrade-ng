@@ -9,4 +9,4 @@ from tensortrade.oms import (
 )
 from . import env
 
-from .version import __version__
+from .__about__ import __version__

@@ -14,22 +14,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up Python
         uses: actions/setup-python@v3
         with:
           python-version: '3.12'
           cache: 'pip'
+
+      - name: Install Hatch
+        uses: pypa/hatch@install
+
       - name: Install pandoc
         uses: r-lib/actions/setup-pandoc@v2
         with:
           pandoc-version: 'latest'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip
-          python -m pip install .[docs,jlab]
+
       - name: Build documentation
-        run: |
-          python -m sphinx -M html docs/source docs/build
+        run: hatch run docs:build
+
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
