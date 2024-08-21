@@ -48,7 +48,6 @@ def portfolio():
 
 
 def test_runs_with_external_feed_only(portfolio):
-
     df = pd.read_csv(get_path("../../data/input/bitfinex_(BTC,ETH)USD_d.csv")).tail(100)
     df = df.rename({"Unnamed: 0": "date"}, axis=1)
     df = df.set_index("date")
@@ -91,7 +90,7 @@ def test_runs_with_external_feed_only(portfolio):
     obs = env.reset()
     while not done:
         action = env.action_space.sample()
-        obs, reward, done, _, info = env.step(action)
+        obs, _, done, _, _ = env.step(action)
 
     assert obs.shape[0] == 50
 

@@ -13,13 +13,9 @@
 # limitations under the License
 from __future__ import annotations
 
-import typing
-
-from tensortrade.env.interfaces import AbstractRewardScheme
+from tensortrade.env.rewards.abstract import AbstractRewardScheme
 from tensortrade.feed import DataFeed, Stream
 
-if typing.TYPE_CHECKING:
-    from tensortrade.oms.wallets import Portfolio
 
 class PBR(AbstractRewardScheme):
     """A reward scheme for position-based returns.
@@ -54,7 +50,7 @@ class PBR(AbstractRewardScheme):
     def on_action(self, action: int) -> None:
         self.position = -1 if action == 0 else 1
 
-    def reward(self, portfolio: Portfolio) -> float:
+    def reward(self) -> float:
         return self.feed.next()["reward"]
 
     def reset(self) -> None:

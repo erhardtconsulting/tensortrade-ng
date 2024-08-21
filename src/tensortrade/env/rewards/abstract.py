@@ -13,27 +13,22 @@
 # limitations under the License
 from __future__ import annotations
 
-import typing
-
 from abc import abstractmethod
 
-from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
+from tensortrade.core.component import Component
+from tensortrade.env.mixins.scheme import SchemeMixin
 
-if typing.TYPE_CHECKING:
-    from tensortrade.oms.wallets import Portfolio
 
-class AbstractRewardScheme(Component, TimeIndexed):
+class AbstractRewardScheme(SchemeMixin, Component, TimeIndexed):
     """A component to compute the reward at each step of an episode."""
 
     registered_name = "rewards"
 
     @abstractmethod
-    def reward(self, portfolio: Portfolio) -> float:
+    def reward(self) -> float:
         """Computes the reward for the current step of an episode.
 
-        :param portfolio: The portfolio associated with the :class:`TensorTradeActionScheme`.
-        :type portfolio: Portfolio
         :return: The computed reward.
         :rtype: float
         """

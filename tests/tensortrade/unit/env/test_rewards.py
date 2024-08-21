@@ -1,5 +1,6 @@
 import unittest
 from collections import OrderedDict
+from unittest.mock import Mock
 
 import numpy as np
 import pandas as pd
@@ -7,7 +8,8 @@ import pytest
 
 import tensortrade.env.rewards as rewards
 from tensortrade.core import TradingContext
-from tensortrade.env.interfaces import AbstractRewardScheme
+from tensortrade.env import TradingEnv
+from tensortrade.env.rewards.abstract import AbstractRewardScheme
 from tensortrade.oms.instruments import USD
 from tensortrade.oms.wallets import Portfolio
 
@@ -28,7 +30,7 @@ class TestTensorTradeRewardScheme(unittest.TestCase):
 
         class ConcreteRewardScheme(AbstractRewardScheme):
 
-            def reward(self, portfolio) -> float:
+            def reward(self) -> float:
                 pass
 
         self.concrete_class = ConcreteRewardScheme
@@ -83,12 +85,16 @@ class TestSimpleProfit:
 
         pct_chg = net_worths.pct_change()
 
+        trading_env = Mock(spec=TradingEnv)
+        trading_env.portfolio = portfolio
+
         reward_scheme = rewards.SimpleProfit()
-        assert reward_scheme.reward(portfolio) == pct_chg.iloc[-1]  # default window size 1
+        reward_scheme.trading_env = trading_env
+        assert reward_scheme.reward() == pct_chg.iloc[-1]  # default window size 1
 
         reward_scheme._window_size = 3
         reward = ((1 + pct_chg.iloc[-1]) * (1 + pct_chg.iloc[-2]) * (1 + pct_chg.iloc[-3])) - 1
-        assert reward_scheme.reward(portfolio) == reward
+        assert reward_scheme.reward() == reward
 
 
 class TestRiskAdjustedReturns:

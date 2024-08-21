@@ -13,15 +13,11 @@
 # limitations under the License
 from __future__ import annotations
 
-import typing
-
 import numpy as np
 import pandas as pd
 
-from tensortrade.env.interfaces import AbstractRewardScheme
+from tensortrade.env.rewards.abstract import AbstractRewardScheme
 
-if typing.TYPE_CHECKING:
-    from tensortrade.oms.wallets import Portfolio
 
 class RiskAdjustedReturns(AbstractRewardScheme):
     """A reward scheme that rewards the agent for increasing its net worth,
@@ -46,6 +42,7 @@ class RiskAdjustedReturns(AbstractRewardScheme):
                  risk_free_rate: float = 0.,
                  target_returns: float = 0.,
                  window_size: int = 1) -> None:
+        super().__init__()
         algorithm = self.default('return_algorithm', return_algorithm)
 
         assert algorithm in ['sharpe', 'sortino']
@@ -60,20 +57,15 @@ class RiskAdjustedReturns(AbstractRewardScheme):
         self._target_returns = self.default('target_returns', target_returns)
         self._window_size = self.default('window_size', window_size)
 
-    def reward(self, portfolio: Portfolio) -> float:
+    def reward(self) -> float:
         """Computes the reward corresponding to the selected risk-adjusted return metric.
-
-        Parameters
-        ----------
-        portfolio : `Portfolio`
-            The current portfolio being used by the environment.
 
         Returns
         -------
         float
             The reward corresponding to the selected risk-adjusted return metric.
         """
-        net_worths = [nw['net_worth'] for nw in portfolio.performance.values()][-(self._window_size + 1):]
+        net_worths = [nw['net_worth'] for nw in self.trading_env.portfolio.performance.values()][-(self._window_size + 1):]
         returns = pd.Series(net_worths).pct_change().dropna()
         risk_adjusted_return = self._return_algorithm(returns)
 

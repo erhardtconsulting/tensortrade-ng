@@ -12,6 +12,5 @@
 # See the License for the specific language governing permissions and
 # limitations under the License
 from tensortrade.env.interfaces.observer import AbstractObserver
-from tensortrade.env.interfaces.reward import AbstractRewardScheme
 from tensortrade.env.interfaces.renderer import AbstractRenderer
 from tensortrade.env.interfaces.stopper import AbstractStopper

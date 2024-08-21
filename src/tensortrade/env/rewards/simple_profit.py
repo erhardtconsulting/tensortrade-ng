@@ -13,12 +13,8 @@
 # limitations under the License
 from __future__ import annotations
 
-import typing
+from tensortrade.env.rewards.abstract import AbstractRewardScheme
 
-from tensortrade.env.interfaces import AbstractRewardScheme
-
-if typing.TYPE_CHECKING:
-    from tensortrade.oms.wallets import Portfolio
 
 class SimpleProfit(AbstractRewardScheme):
     """A simple reward scheme that rewards the agent for incremental increases
@@ -38,16 +34,13 @@ class SimpleProfit(AbstractRewardScheme):
     registered_name = "simple"
 
     def __init__(self, window_size: int = 1):
+        super().__init__()
+
         self._window_size = self.default('window_size', window_size)
 
-    def reward(self, portfolio: Portfolio) -> float:
+    def reward(self) -> float:
         """Rewards the agent for incremental increases in net worth over a
         sliding window.
-
-        Parameters
-        ----------
-        portfolio : `Portfolio`
-            The portfolio being used by the environment.
 
         Returns
         -------
@@ -55,7 +48,7 @@ class SimpleProfit(AbstractRewardScheme):
             The cumulative percentage change in net worth over the previous
             `window_size` time steps.
         """
-        net_worths = [nw['net_worth'] for nw in portfolio.performance.values()]
+        net_worths = [nw['net_worth'] for nw in self.trading_env.portfolio.performance.values()]
 
         if len(net_worths) > 1:
             return net_worths[-1] / net_worths[-min(len(net_worths), self._window_size + 1)] - 1.0
