@@ -11,5 +11,4 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-from tensortrade.env.observers.intraday import IntradayObserver
-from tensortrade.env.observers.default import DefaultObserver
+from tensortrade.env.observers.window import WindowObserver

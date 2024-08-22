@@ -61,51 +61,59 @@ class TestSimpleProfit(unittest.TestCase):
         env.reset()
         reward = simple_profit.reward()
         TestCase().assertEqual(0.0, reward)
-        TestCase().assertEqual(1, env.clock.step)
-        TestCase().assertEqual(1, self.portfolio.clock.step)
-        TestCase().assertEqual(1, self.exchange.clock.step)
+        TestCase().assertEqual(0, env.clock.step)
+        TestCase().assertEqual(0, self.portfolio.clock.step)
+        TestCase().assertEqual(0, self.exchange.clock.step)
 
         # round 2
         env.step(0)
         reward = simple_profit.reward()
         TestCase().assertEqual(0.0, reward)
-        TestCase().assertEqual(2, env.clock.step)
-        TestCase().assertEqual(2, self.portfolio.clock.step)
-        TestCase().assertEqual(2, self.exchange.clock.step)
+        TestCase().assertEqual(1, env.clock.step)
+        TestCase().assertEqual(1, self.portfolio.clock.step)
+        TestCase().assertEqual(1, self.exchange.clock.step)
 
         # round 3
         env.step(1)
         reward = simple_profit.reward()
         TestCase().assertAlmostEqual(-0.0483, reward, 4)
-        TestCase().assertEqual(3, env.clock.step)
-        TestCase().assertEqual(3, self.portfolio.clock.step)
-        TestCase().assertEqual(3, self.exchange.clock.step)
+        TestCase().assertEqual(2, env.clock.step)
+        TestCase().assertEqual(2, self.portfolio.clock.step)
+        TestCase().assertEqual(2, self.exchange.clock.step)
 
         # round 4
         env.step(1)
         reward = simple_profit.reward()
         TestCase().assertAlmostEqual(0.0952, reward, 4)
-        TestCase().assertEqual(4, env.clock.step)
-        TestCase().assertEqual(4, self.portfolio.clock.step)
-        TestCase().assertEqual(4, self.exchange.clock.step)
+        TestCase().assertEqual(3, env.clock.step)
+        TestCase().assertEqual(3, self.portfolio.clock.step)
+        TestCase().assertEqual(3, self.exchange.clock.step)
 
         # round 5
         env.step(1)
         reward = simple_profit.reward()
         TestCase().assertAlmostEqual(0.0435, reward, 4)
-        TestCase().assertEqual(5, env.clock.step)
-        TestCase().assertEqual(5, self.portfolio.clock.step)
-        TestCase().assertEqual(5, self.exchange.clock.step)
+        TestCase().assertEqual(4, env.clock.step)
+        TestCase().assertEqual(4, self.portfolio.clock.step)
+        TestCase().assertEqual(4, self.exchange.clock.step)
 
         # round 6
         env.step(0)
         reward = simple_profit.reward()
         TestCase().assertAlmostEqual(-0.003, reward, 4)
+        TestCase().assertEqual(5, env.clock.step)
+        TestCase().assertEqual(5, self.portfolio.clock.step)
+        TestCase().assertEqual(5, self.exchange.clock.step)
+
+        # round 7
+        env.step(0)
+        reward = simple_profit.reward()
+        TestCase().assertEqual(0.0, reward)
         TestCase().assertEqual(6, env.clock.step)
         TestCase().assertEqual(6, self.portfolio.clock.step)
         TestCase().assertEqual(6, self.exchange.clock.step)
 
-        # round 7
+        # round 8
         env.step(0)
         reward = simple_profit.reward()
         TestCase().assertEqual(0.0, reward)
@@ -113,18 +121,10 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(7, self.portfolio.clock.step)
         TestCase().assertEqual(7, self.exchange.clock.step)
 
-        # round 8
-        env.step(0)
-        reward = simple_profit.reward()
-        TestCase().assertEqual(0.0, reward)
-        TestCase().assertEqual(8, env.clock.step)
-        TestCase().assertEqual(8, self.portfolio.clock.step)
-        TestCase().assertEqual(8, self.exchange.clock.step)
-
         # reset
         env.reset()
         reward = simple_profit.reward()
         TestCase().assertEqual(0.0, reward)
-        TestCase().assertEqual(1, env.clock.step)
-        TestCase().assertEqual(1, self.portfolio.clock.step)
-        TestCase().assertEqual(1, self.exchange.clock.step)
+        TestCase().assertEqual(0, env.clock.step)
+        TestCase().assertEqual(0, self.portfolio.clock.step)
+        TestCase().assertEqual(0, self.exchange.clock.step)

@@ -18,6 +18,7 @@ from typing import Callable, Tuple, List, TypeVar
 
 
 from tensortrade.core import Component, TimedIdentifiable
+from tensortrade.env.utils.feed_controller import State
 from tensortrade.oms.exchanges import Exchange
 from tensortrade.oms.orders import OrderListener
 from tensortrade.oms.instruments import Instrument, Quantity, ExchangePair
@@ -298,7 +299,7 @@ class Portfolio(Component, TimedIdentifiable):
 
         return keys
 
-    def on_next(self, data: dict) -> None:
+    def on_next(self, data: State) -> None:
         """Updates the performance metrics.
 
         Parameters
@@ -307,7 +308,7 @@ class Portfolio(Component, TimedIdentifiable):
             The data produced from the observer feed that is used to
             update the performance metrics.
         """
-        data = data["internal"]
+        data = data.portfolio
 
         if not self._keys:
             self._keys = self._find_keys(data)

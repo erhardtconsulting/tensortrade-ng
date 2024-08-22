@@ -15,21 +15,22 @@ from __future__ import annotations
 
 import typing
 
-from abc import abstractmethod
-
 import numpy as np
 
-from tensortrade.core.component import Component
-from tensortrade.core.base import TimeIndexed
-from tensortrade.env.mixins.scheme import SchemeMixin
+from gymnasium.spaces import Box
+
+from tensortrade.env.observers.abstract import AbstractObserver
+from tensortrade.env.utils import ObservationHistory
 
 if typing.TYPE_CHECKING:
     from typing import TypeAlias
 
-    from gymnasium import Space
+    from gymnasium.spaces import Space
 
-class AbstractObserver(SchemeMixin, Component, TimeIndexed):
-    """A component to generate an observation at each step of an episode.
+class WindowObserver(AbstractObserver):
+    """A simple observer that allows to observe the data.
+
+    This observer just returns the feature data. It is the simplest observer possible.
 
     :param observation_dtype: The data type of the observation. Defaults to ``np.float32``.
     :type observation_dtype: TypeAlias
@@ -39,48 +40,46 @@ class AbstractObserver(SchemeMixin, Component, TimeIndexed):
     :type observation_highs: float
     """
 
-    registered_name = "observer"
+    registered_name = "default_observer"
 
     def __init__(
             self,
             observation_dtype: TypeAlias = np.float32,
             observation_lows: float = -np.inf,
             observation_highs: float = np.inf,
-    ):
-        super().__init__()
-
-        self._observation_dtype = observation_dtype
-        self._observation_lows = observation_lows
-        self._observation_highs = observation_highs
+            ) -> None:
+        super().__init__(
+            observation_dtype=observation_dtype,
+            observation_lows=observation_lows,
+            observation_highs=observation_highs
+        )
 
     @property
-    @abstractmethod
     def observation_space(self) -> Space:
-        """The observation space of the :class:`TradingEnv`.
+        return Box(
+            low=self._observation_lows,
+            high=self._observation_highs,
+            shape=(1, self.trading_env.feed.features_size),
+            dtype=self._observation_dtype
+        )
 
-        :return: The gymnasium observation space of the :class:`TradingEnv`.
-        :rtype: Space
-        """
-        raise NotImplementedError()
-
-    @abstractmethod
     def observe(self) -> np.array:
-        """Gets the observation at the current step of an episode.
+        """Observes the environment.
 
-        :return: The current observation of the environment.
+        This will return the actual state of the features.
+
+        :returns: The current observation window.
         :rtype: np.array
         """
-        raise NotImplementedError()
+        obs = np.array(self.trading_env.feed.state.features.values())
+        obs = obs.astype(self._observation_dtype)
 
-    @abstractmethod
+        return obs
+
     def has_next(self) -> bool:
-        """Tells if there is a next observation available. Actually if we still have training data available.
+        """Checks if another observation can be generated.
 
-        :return: True if there is a next observation available, otherwise False.
+        :returns: True if another observation can be generated.
         :rtype: bool
         """
-        raise NotImplementedError()
-
-    def reset(self):
-        """Resets the observer."""
-        pass
+        return self.trading_env.feed.has_next()

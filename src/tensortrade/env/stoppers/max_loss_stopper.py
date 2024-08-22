@@ -47,5 +47,5 @@ class MaxLossStopper(AbstractStopper):
 
     def stop(self) -> bool:
         c1 = self.trading_env.portfolio.profit_loss > self.max_allowed_loss
-        c2 = not self.trading_env.observer.has_next()
+        c2 = not self.trading_env._observer.has_next()
         return c1 or c2

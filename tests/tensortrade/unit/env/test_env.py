@@ -135,10 +135,10 @@ def test_runs_with_random_start(portfolio):
         random_start_pct=0.10,  # Randomly start within the first 10% of the sample
     )
 
-    done = False
+    terminated = False
     obs = env.reset()
-    while not done:
+    while not terminated:
         action = env.action_space.sample()
-        obs, reward, done, _, info = env.step(action)
+        obs, _, terminated, _, _ = env.step(action)
 
     assert obs.shape[0] == 50

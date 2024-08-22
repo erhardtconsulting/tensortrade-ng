@@ -18,6 +18,8 @@ from typing import List
 
 from tensortrade.env.environment import TradingEnv
 
+from tensortrade.feed import DataFeed, Stream
+
 if typing.TYPE_CHECKING:
     from typing import Optional, Union
 
@@ -29,7 +31,7 @@ if typing.TYPE_CHECKING:
         AbstractStopper,
         AbstractObserver
     )
-    from tensortrade.feed import DataFeed
+
     from tensortrade.oms.wallets import Portfolio
 
 
@@ -72,12 +74,8 @@ def create(portfolio: Portfolio,
 
     # prepare observer
     if observer is None:
-        observer = observers.DefaultObserver(
-            portfolio=portfolio,
-            feed=feed,
-            renderer_feed=renderer_feed,
+        observer = observers.WindowObserver(
             window_size=window_size,
-            min_periods=min_periods
         )
 
     # prepare stopper
@@ -94,12 +92,24 @@ def create(portfolio: Portfolio,
     if isinstance(renderer, List):
         renderer = AggregateRenderer(renderer)
 
+    if renderer_feed is not None:
+        env_feed = DataFeed([
+            Stream.group(feed.inputs).rename("features"),
+            Stream.group(renderer_feed.inputs).rename("data")
+        ])
+    else:
+        env_feed = DataFeed([
+            Stream.group(feed.inputs).rename("features")
+        ])
+
     # create env
     return TradingEnv(
         portfolio=portfolio,
+        feed=env_feed,
         action_scheme=action_scheme,
         reward_scheme=reward_scheme,
         observer=observer,
+        data_feed=renderer_feed,
         stopper=stopper,
         informer=informer,
         renderer=renderer,

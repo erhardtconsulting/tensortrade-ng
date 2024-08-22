@@ -284,9 +284,8 @@ env = default.create(
 )
 ```
 
-
 ```python
-env.observer.feed.next()
+env._observer.feed.next()
 ```
 
 

@@ -143,7 +143,7 @@ class PositionChangeChart(AbstractRenderer):
         self.color = "orange"
 
     def render(self, env, **kwargs):
-        history = pd.DataFrame(env.observer.renderer_history)
+        history = pd.DataFrame(env._observer.renderer_history)
 
         actions = list(history.action)
         p = list(history.price)
@@ -173,7 +173,7 @@ class PositionChangeChart(AbstractRenderer):
         axs[0].scatter(sell.index, sell.values, marker="^", color="red")
         axs[0].set_title("Trading Chart")
 
-        performance_df = pd.DataFrame().from_dict(env.action_scheme.portfolio.performance, orient='index')
+        performance_df = pd.DataFrame().from_dict(env._action_scheme.portfolio.performance, orient='index')
         performance_df.plot(ax=axs[1])
         axs[1].set_title("Net Worth")
 
