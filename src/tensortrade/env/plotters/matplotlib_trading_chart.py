@@ -22,8 +22,8 @@ import numpy as np
 from matplotlib import style
 from pandas.plotting import register_matplotlib_converters
 
-from tensortrade.env.renderers.abstract import AbstractRenderer
-from tensortrade.env.renderers.utils import create_auto_file_name, check_path, check_valid_format
+from tensortrade.env.plotters.abstract import AbstractPlotter
+from tensortrade.env.plotters.utils import create_auto_file_name, check_path, check_valid_format
 from tensortrade.oms.orders import TradeSide
 
 style.use("ggplot")
@@ -35,7 +35,7 @@ if typing.TYPE_CHECKING:
     from collections import OrderedDict
 
 
-class MatplotlibTradingChart(AbstractRenderer):
+class MatplotlibTradingChart(AbstractPlotter):
     """ Trading visualization for TensorTrade using Matplotlib
     Parameters
     ---------
@@ -153,26 +153,14 @@ class MatplotlibTradingChart(AbstractRenderer):
 
         self.net_worth_ax.set_ylim(min(net_worths) / 1.25, max(net_worths) * 1.25)
 
-    def render(self,
-               episode: int,
-               max_episodes: int,
-               step: int,
-               max_steps: int,
-               price_history: pd.DataFrame,
-               net_worth: pd.Series,
-               performance: pd.DataFrame,
-               trades: OrderedDict) -> None:
-        if price_history is None:
-            raise ValueError("renderers() is missing required positional argument 'price_history'.")
+    def render(self) -> None:
+        # get price history
+        price_history = self.trading_env.feed.meta_history
 
-        if net_worth is None:
-            raise ValueError("renderers() is missing required positional argument 'net_worth'.")
-
-        if performance is None:
-            raise ValueError("renderers() is missing required positional argument 'performance'.")
-
-        if trades is None:
-            raise ValueError("renderers() is missing required positional argument 'trades'.")
+        # get performance data
+        performance_df = pd.DataFrame.from_dict(self.trading_env.portfolio.performance, orient='index')
+        net_worth = performance_df['net_worth']
+        trades = self.trading_env.broker.trades
 
         if not self.fig:
             self._create_figure()
@@ -180,13 +168,14 @@ class MatplotlibTradingChart(AbstractRenderer):
         if self._show_chart:
             plt.show(block=False)
 
-        current_step = step - 1
+        current_step = self.trading_env.clock.step - 1
 
         self._df = price_history
-        if max_steps:
-            window_size = max_steps
-        else:
-            window_size = 20
+        #if max_steps:
+        #    window_size = max_steps
+        #else:
+        #    window_size = 20
+        window_size = 20
 
         current_net_worth = round(net_worth[len(net_worth)-1], 1)
         initial_net_worth = round(net_worth[0], 1)

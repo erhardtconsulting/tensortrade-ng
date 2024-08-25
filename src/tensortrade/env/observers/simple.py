@@ -16,18 +16,16 @@ from __future__ import annotations
 import typing
 
 import numpy as np
-
 from gymnasium.spaces import Box
 
 from tensortrade.env.observers.abstract import AbstractObserver
-from tensortrade.env.utils import ObservationHistory
 
 if typing.TYPE_CHECKING:
     from typing import TypeAlias
 
     from gymnasium.spaces import Space
 
-class WindowObserver(AbstractObserver):
+class SimpleObserver(AbstractObserver):
     """A simple observer that allows to observe the data.
 
     This observer just returns the feature data. It is the simplest observer possible.
@@ -40,7 +38,7 @@ class WindowObserver(AbstractObserver):
     :type observation_highs: float
     """
 
-    registered_name = "default_observer"
+    registered_name = "simple_observer"
 
     def __init__(
             self,
@@ -71,7 +69,9 @@ class WindowObserver(AbstractObserver):
         :returns: The current observation window.
         :rtype: np.array
         """
-        obs = np.array(self.trading_env.feed.state.features.values())
+        state = list(self.trading_env.feed.state.features.values())
+
+        obs = np.array([state])
         obs = obs.astype(self._observation_dtype)
 
         return obs

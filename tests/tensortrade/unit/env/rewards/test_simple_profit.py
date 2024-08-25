@@ -16,8 +16,12 @@ from unittest import TestCase
 
 import numpy as np
 
-from tensortrade.env import create, actions
+from tensortrade.env import TradingEnv
+from tensortrade.env.actions import BSH
+from tensortrade.env.observers import SimpleObserver
+
 from tensortrade.env.rewards import SimpleProfit
+
 from tensortrade.feed import Stream, DataFeed
 from tensortrade.oms.exchanges import Exchange
 from tensortrade.oms.instruments import Instrument
@@ -50,11 +54,16 @@ class TestSimpleProfit(unittest.TestCase):
     def test_reward(self):
         simple_profit = SimpleProfit()
 
-        env = create(
-            feed=DataFeed([self.prices_stream]),
+        feed = DataFeed([
+            Stream.group([self.prices_stream]).rename('features'),
+        ])
+
+        env = TradingEnv(
             portfolio=self.portfolio,
-            action_scheme=actions.BSH(cash=self.usdt_wallet, asset=self.btc_wallet),
-            reward_scheme=simple_profit
+            feed=feed,
+            action_scheme=BSH(cash=self.usdt_wallet, asset=self.btc_wallet),
+            reward_scheme=simple_profit,
+            observer=SimpleObserver()
         )
 
         # round 1
@@ -64,6 +73,7 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(0, env.clock.step)
         TestCase().assertEqual(0, self.portfolio.clock.step)
         TestCase().assertEqual(0, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())
 
         # round 2
         env.step(0)
@@ -72,6 +82,7 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(1, env.clock.step)
         TestCase().assertEqual(1, self.portfolio.clock.step)
         TestCase().assertEqual(1, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())
 
         # round 3
         env.step(1)
@@ -80,6 +91,7 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(2, env.clock.step)
         TestCase().assertEqual(2, self.portfolio.clock.step)
         TestCase().assertEqual(2, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())
 
         # round 4
         env.step(1)
@@ -88,6 +100,7 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(3, env.clock.step)
         TestCase().assertEqual(3, self.portfolio.clock.step)
         TestCase().assertEqual(3, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())
 
         # round 5
         env.step(1)
@@ -96,6 +109,7 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(4, env.clock.step)
         TestCase().assertEqual(4, self.portfolio.clock.step)
         TestCase().assertEqual(4, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())
 
         # round 6
         env.step(0)
@@ -104,6 +118,7 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(5, env.clock.step)
         TestCase().assertEqual(5, self.portfolio.clock.step)
         TestCase().assertEqual(5, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())
 
         # round 7
         env.step(0)
@@ -112,6 +127,7 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(6, env.clock.step)
         TestCase().assertEqual(6, self.portfolio.clock.step)
         TestCase().assertEqual(6, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())
 
         # round 8
         env.step(0)
@@ -120,6 +136,16 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(7, env.clock.step)
         TestCase().assertEqual(7, self.portfolio.clock.step)
         TestCase().assertEqual(7, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())
+
+        # round 9
+        env.step(0)
+        reward = simple_profit.reward()
+        TestCase().assertEqual(0.0, reward)
+        TestCase().assertEqual(8, env.clock.step)
+        TestCase().assertEqual(8, self.portfolio.clock.step)
+        TestCase().assertEqual(8, self.exchange.clock.step)
+        TestCase().assertFalse(env.feed.has_next())
 
         # reset
         env.reset()
@@ -128,3 +154,4 @@ class TestSimpleProfit(unittest.TestCase):
         TestCase().assertEqual(0, env.clock.step)
         TestCase().assertEqual(0, self.portfolio.clock.step)
         TestCase().assertEqual(0, self.exchange.clock.step)
+        TestCase().assertTrue(env.feed.has_next())

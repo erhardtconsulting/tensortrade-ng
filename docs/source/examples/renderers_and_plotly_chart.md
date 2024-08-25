@@ -242,7 +242,7 @@ agent.train(n_episodes=2, n_steps=200, render_interval=10)
 Create PlotlyTradingChart and FileLogger renderers. Configuring renderers is optional as they can be used with their default settings.
 
 ```python
-from tensortrade.env.renderers.abstract import PlotlyTradingChart, FileLogger
+from tensortrade.env.plotters.abstract import PlotlyTradingChart, FileLogger
 
 chart_renderer = PlotlyTradingChart(
     display=True,  # show the chart on screen (default)

@@ -13,11 +13,8 @@
 # limitations under the License
 import importlib.util
 
-from tensortrade.env.renderers.file_logger import FileLogger
-from tensortrade.env.renderers.screen_logger import ScreenLogger
-
 if importlib.util.find_spec("matplotlib"):
-    from tensortrade.env.renderers.matplotlib_trading_chart import MatplotlibTradingChart
+    from tensortrade.env.plotters.matplotlib_trading_chart import MatplotlibTradingChart
 
 if importlib.util.find_spec("plotly"):
-    from tensortrade.env.renderers.plotly_trading_chart import PlotlyTradingChart
+    from tensortrade.env.plotters.plotly_trading_chart import PlotlyTradingChart

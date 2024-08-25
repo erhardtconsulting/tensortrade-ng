@@ -13,19 +13,14 @@
 # limitations under the License
 from __future__ import annotations
 
-import typing
 from abc import abstractmethod
 from datetime import datetime
 
-import pandas as pd
-
 from tensortrade.core import Component
-
-if typing.TYPE_CHECKING:
-    from collections import OrderedDict
+from tensortrade.env.mixins.scheme import SchemeMixin
 
 
-class AbstractRenderer(Component):
+class AbstractPlotter(SchemeMixin, Component):
     """A component for rendering a view of the environment at each step of
     an episode."""
 
@@ -37,15 +32,7 @@ class AbstractRenderer(Component):
         self._max_steps = None
 
     @abstractmethod
-    def render(self,
-               episode: int,
-               max_episodes: int,
-               step: int,
-               max_steps: int,
-               price_history: pd.DataFrame,
-               net_worth: pd.Series,
-               performance: pd.DataFrame,
-               trades: OrderedDict) -> None:
+    def render(self) -> None:
         raise NotImplementedError()
 
     def save(self) -> None:

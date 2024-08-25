@@ -15,15 +15,21 @@ from __future__ import annotations
 
 import typing
 
+import pandas as pd
+
 from dataclasses import dataclass
 
 from warnings import warn
+
+from pandas.core.interchange.dataframe_protocol import DataFrame
 
 from tensortrade.core import Observable, TimeIndexed
 from tensortrade.feed import Stream, DataFeed
 from tensortrade.feed.core.base import IterableStream, Group, NameSpace
 
 if typing.TYPE_CHECKING:
+    from pandas import DataFrame
+
     from typing import Any, Dict, List, Optional
 
     from tensortrade.oms.wallets import Portfolio, Wallet
@@ -56,7 +62,7 @@ class FeedController(Observable, TimeIndexed):
         The feed need to be a group of streams compiled together to a :class:`DataFeed`. It should consists of:
             * features (Group): The features shown to the environment as observation for learning. This data should
               be normalized and prepared for the environment. If it's missing a :class:`ValueError` is raised.
-            * meta (Group): The metadata used by the components, like plotters or renderers. This contains data like
+            * meta (Group): The metadata used by the components, like plotters or plotters. This contains data like
               raw ohlcv data. It can be omitted but this will display a warning.
 
     :param feed: The feed to use.
@@ -85,13 +91,14 @@ class FeedController(Observable, TimeIndexed):
         """
         return self._state
 
-    def meta_history(self) -> List[Dict[str, Any]]:
+    @property
+    def meta_history(self) -> DataFrame:
         """Gets the metadata history of this episode.
 
         :return: The metadata history.
-        :rtype: List[Dict[str, Any]]
+        :rtype: DataFrame
         """
-        return self._meta_history
+        return pd.DataFrame(self._meta_history)
 
     @property
     def features_len(self) -> int:
@@ -125,6 +132,7 @@ class FeedController(Observable, TimeIndexed):
 
     def reset(self, random_start: int = 0) -> None:
         """Resets the feed and gets first data"""
+        self._meta_history = []
         self._feed.reset(random_start=random_start)
         self._update_data()
 
@@ -152,7 +160,7 @@ class FeedController(Observable, TimeIndexed):
             The DataFeed is a group of streams compiled together to be used by the environment. It consists of:
                 * features (Group): The features shown to the environment as observation for learning. This data should
                   be normalized and prepared for the environment.
-                * meta (Group): The metadata used by the components, like plotters or renderers. This contains data like
+                * meta (Group): The metadata used by the components, like plotters or plotters. This contains data like
                   raw OHLCV data.
                 * portfolio (Group): This contains data about the portfolio and will be created by the environment itself.
 

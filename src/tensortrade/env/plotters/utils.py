@@ -17,13 +17,13 @@ import os
 import typing
 from datetime import datetime
 
-from tensortrade.env.renderers.abstract import AbstractRenderer
+from tensortrade.env.mixins.scheme import SchemeMixin
+from tensortrade.env.plotters.abstract import AbstractPlotter
 
 if typing.TYPE_CHECKING:
-    from collections import OrderedDict
     from typing import List
 
-    import pandas as pd
+    from tensortrade.env import TradingEnv
 
 def create_auto_file_name(filename_prefix: str,
                            ext: str,
@@ -48,45 +48,44 @@ def check_valid_format(valid_formats: list, save_format: str) -> None:
         raise ValueError("Acceptable formats are '{}'. Found '{}'".format("', '".join(valid_formats), save_format))
 
 
-class AggregateRenderer(AbstractRenderer):
-    """A renderer that aggregates compatible renderers so they can all be used
+class AggregatePlotter(AbstractPlotter):
+    """A renderer that aggregates compatible plotters so they can all be used
     to render a view of the environment.
 
     Parameters
     ----------
     renderers : List[Renderer]
-        A list of renderers to aggregate.
+        A list of plotters to aggregate.
 
     Attributes
     ----------
     renderers : List[Renderer]
-        A list of renderers to aggregate.
+        A list of plotters to aggregate.
     """
 
     registered_name = "aggregate_renderer"
 
-    def __init__(self, renderers: List[AbstractRenderer]) -> None:
+    def __init__(self, renderers: List[AbstractPlotter]) -> None:
         super().__init__()
         self.renderers = renderers
 
-    def render(self,
-               episode: int,
-               max_episodes: int,
-               step: int,
-               max_steps: int,
-               price_history: pd.DataFrame,
-               net_worth: pd.Series,
-               performance: pd.DataFrame,
-               trades: OrderedDict) -> None:
+    @SchemeMixin.trading_env.setter
+    def trading_env(self, value: TradingEnv):
+        """Sets the :class:`TradingEnv` instance.
+
+        This setter allows for the initialization of the `_trading_env` attribute.
+
+        :param value: The `TradingEnv` instance to be assigned to `_trading_env`.
+        :type value: TradingEnv
+        """
+        self._trading_env = value
+
+        for renderer in self.renderers:
+            renderer.trading_env = value
+
+    def render(self) -> None:
         for r in self.renderers:
-            r.render(episode=episode,
-                     max_episodes=max_episodes,
-                     step=step,
-                     max_steps=max_steps,
-                     price_history=price_history,
-                     net_worth=net_worth,
-                     performance=performance,
-                     trades=trades)
+            r.render()
 
     def save(self) -> None:
         for r in self.renderers:

@@ -1,8 +1,10 @@
 import pandas as pd
 import pytest
 import ta
-from tensortrade.env import create
+
+from tensortrade.env import TradingEnv
 from tensortrade.env.actions import ManagedRiskOrders
+from tensortrade.env.observers import WindowObserver
 from tensortrade.env.rewards import SimpleProfit
 
 from tensortrade.feed import DataFeed, Stream, NameSpace
@@ -10,6 +12,7 @@ from tensortrade.oms.exchanges import Exchange
 from tensortrade.oms.instruments import USD, BTC, ETH, LTC
 from tensortrade.oms.services.execution.simulated import execute_order
 from tensortrade.oms.wallets import Portfolio, Wallet
+
 from tests.tensortrade.unit.utils import get_path
 
 
@@ -73,17 +76,19 @@ def test_runs_with_external_feed_only(portfolio):
         for name in bitfinex_eth.columns:
             streams += [Stream.source(list(bitfinex_eth[name]), dtype="float").rename(name)]
 
-    feed = DataFeed(streams)
+    feed = DataFeed([
+        Stream.group(streams).rename('features')
+    ])
 
     action_scheme = ManagedRiskOrders()
     reward_scheme = SimpleProfit()
 
-    env = create(
+    env = TradingEnv(
         portfolio=portfolio,
         action_scheme=action_scheme,
         reward_scheme=reward_scheme,
-        feed=feed,
-        window_size=50
+        observer=WindowObserver(window_size=50),
+        feed=feed
     )
 
     done = False
@@ -121,18 +126,20 @@ def test_runs_with_random_start(portfolio):
         for name in bitfinex_eth.columns:
             streams += [Stream.source(list(bitfinex_eth[name]), dtype="float").rename(name)]
 
-    feed = DataFeed(streams)
+    feed = DataFeed([
+        Stream.group(streams).rename('features')
+    ])
 
     action_scheme = ManagedRiskOrders()
     reward_scheme = SimpleProfit()
 
-    env = create(
+    env = TradingEnv(
         portfolio=portfolio,
         action_scheme=action_scheme,
         reward_scheme=reward_scheme,
+        observer=WindowObserver(window_size=50),
         feed=feed,
-        window_size=50,
-        random_start_pct=0.10,  # Randomly start within the first 10% of the sample
+        random_start_pct=0.10, # Randomly start within the first 10% of the sample
     )
 
     terminated = False

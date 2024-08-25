@@ -16,20 +16,21 @@ from __future__ import annotations
 import os
 import typing
 
+import pandas as pd
+
 import plotly.graph_objects as go
 from IPython.display import display, clear_output
 from plotly.subplots import make_subplots
 
-from tensortrade.env.renderers.abstract import AbstractRenderer
-from tensortrade.env.renderers.utils import check_valid_format, check_path, create_auto_file_name
+from tensortrade.env.plotters.abstract import AbstractPlotter
+from tensortrade.env.plotters.utils import check_valid_format, check_path, create_auto_file_name
 
 if typing.TYPE_CHECKING:
     from typing import Tuple, Union
-    import pandas as pd
 
     from collections import OrderedDict
 
-class PlotlyTradingChart(AbstractRenderer):
+class PlotlyTradingChart(AbstractPlotter):
     """Trading visualization for TensorTrade using Plotly.
 
     Parameters
@@ -229,26 +230,15 @@ class PlotlyTradingChart(AbstractRenderer):
 
         return tuple(annotations)
 
-    def render(self,
-               episode: int,
-               max_episodes: int,
-               step: int,
-               max_steps: int,
-               price_history: pd.DataFrame,
-               net_worth: pd.Series,
-               performance: pd.DataFrame,
-               trades: OrderedDict) -> None:
-        if price_history is None:
-            raise ValueError("renderers() is missing required positional argument 'price_history'.")
+    def render(self) -> None:
+        # get price history
+        price_history = self.trading_env.feed.meta_history
 
-        if net_worth is None:
-            raise ValueError("renderers() is missing required positional argument 'net_worth'.")
-
-        if performance is None:
-            raise ValueError("renderers() is missing required positional argument 'performance'.")
-
-        if trades is None:
-            raise ValueError("renderers() is missing required positional argument 'trades'.")
+        # get performance data
+        performance_df = pd.DataFrame.from_dict(self.trading_env.portfolio.performance, orient='index')
+        net_worth = performance_df['net_worth']
+        performance = performance_df.drop(columns=['base_symbol'])
+        trades = self.trading_env.broker.trades
 
         if not self.fig:
             self._create_figure(performance.keys())
@@ -256,13 +246,15 @@ class PlotlyTradingChart(AbstractRenderer):
         if self._show_chart:  # ensure chart visibility through notebook cell reruns
             display(self.fig)
 
-        self.fig.layout.title = self._create_log_entry(episode, max_episodes, step, max_steps)
+        self.fig.layout.title = f'Profit chart'
+
         self._price_chart.update(dict(
             open=price_history['open'],
             high=price_history['high'],
             low=price_history['low'],
             close=price_history['close']
         ))
+
         self.fig.layout.annotations += self._create_trade_annotations(trades, price_history)
 
         self._volume_chart.update({'y': price_history['volume']})

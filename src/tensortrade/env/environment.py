@@ -16,24 +16,26 @@ from __future__ import annotations
 import random
 import typing
 import uuid
-import logging
 
 import gymnasium
-import pandas as pd
+
+from typing import List
+
 from gymnasium.core import ActType, ObsType
 
 from tensortrade.core import TimeIndexed, Clock, Component
+from tensortrade.env.plotters.utils import AggregatePlotter
 from tensortrade.env.utils import FeedController
 from tensortrade.feed import DataFeed
 from tensortrade.oms.orders import Broker
 
 if typing.TYPE_CHECKING:
-    from typing import Dict, Tuple, Any, SupportsFloat, Optional
+    from typing import Dict, Tuple, Any, SupportsFloat, Optional, Union
 
     from tensortrade.env.actions.abstract import AbstractActionScheme
     from tensortrade.env.observers.abstract import AbstractObserver
     from tensortrade.env.rewards.abstract import AbstractRewardScheme
-    from tensortrade.env.renderers.abstract import AbstractRenderer
+    from tensortrade.env.plotters.abstract import AbstractPlotter
     from tensortrade.env.stoppers.abstract import AbstractStopper
     from tensortrade.env.informers.abstract import AbstractInformer
     from tensortrade.oms.wallets import Portfolio
@@ -56,7 +58,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
     informer : `AbstractInformer`
         A component for providing information after each step of the
         environment.
-    renderer : `AbstractRenderer`
+    renderer : `AbstractPlotter`
         A component for rendering the environment.
     kwargs : keyword arguments
         Additional keyword arguments needed to create the environment.
@@ -74,13 +76,10 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
                  *,
                  stopper: Optional[AbstractStopper] = None,
                  informer: Optional[AbstractInformer] = None,
-                 renderer: Optional[AbstractRenderer] = None,
-                 min_periods: int = None,
-                 max_episode_steps: int = None,
-                 random_start_pct: float = 0.00,
-                 **kwargs) -> None:
+                 plotter: Union[Optional[AbstractPlotter], List[AbstractPlotter]] = None,
+                 random_start_pct: float = 0.00
+                 ) -> None:
         super().__init__()
-        self.min_periods = min_periods
         self.random_start_pct = random_start_pct
         self.render_mode = 'human'
 
@@ -89,11 +88,15 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         self._observer = observer
         self._stopper = stopper
         self._informer = informer
-        self._renderer = renderer
         self._portfolio = portfolio
 
+        # renderer can be a list of multiple plotters
+        if plotter is not None and isinstance(plotter, List):
+            self._plotter = AggregatePlotter(renderers=plotter)
+        else:
+            self._plotter = plotter
+
         # internal attributes
-        #self._clock = Clock()
         self._broker = Broker()
 
         # init portfolio
@@ -106,6 +109,8 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         self._action_scheme.trading_env = self
         self._reward_scheme.trading_env = self
         self._observer.trading_env = self
+        if self._plotter is not None:
+            self._plotter.trading_env = self
         if self._stopper is not None:
             self._stopper.trading_env = self
         if self._informer is not None:
@@ -114,11 +119,6 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         # set action and observation space
         self.action_space = self._action_scheme.action_space
         self.observation_space = self._observer.observation_space
-
-        self._enable_logger = kwargs.get('enable_logger', False)
-        if self._enable_logger:
-            self.logger = logging.getLogger(kwargs.get('logger_name', __name__))
-            self.logger.setLevel(kwargs.get('log_level', logging.DEBUG))
 
     @property
     def clock(self) -> Clock:
@@ -255,39 +255,23 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
             self._stopper.reset()
         if self._informer is not None:
             self._informer.reset()
-        if self._renderer is not None:
-            self._renderer.reset()
+        if self._plotter is not None:
+            self._plotter.reset()
 
         # return new observation
         obs = self._observer.observe()
-        info = self._informer.info()
+        if self._informer is not None:
+            info = self._informer.info()
+        else:
+            info = {}
 
         return obs, info
 
-    def render(self, **kwargs) -> None:
+    def plot(self, **kwargs) -> None:
         """Renders the environment."""
-        if self._renderer is not None:
-            episode = kwargs.get('episode', None)
-            max_episodes = kwargs.get('max_episodes', None)
-            max_steps = kwargs.get('max_steps', None)
-
-            price_history = None
-            if len(self._observer.renderer_history) > 0:
-                price_history = pd.DataFrame(self._observer.renderer_history)
-
-            performance = pd.DataFrame.from_dict(self._portfolio.performance, orient='index')
-
-            self._renderer.render(
-                episode=episode,
-                max_episodes=max_episodes,
-                step=self.clock.step,
-                max_steps=max_steps,
-                price_history=price_history,
-                net_worth=performance.net_worth,
-                performance=performance.drop(columns=['base_symbol']),
-                trades=self._broker.trades
-            )
+        if self._plotter is not None:
+            self._plotter.render()
 
     def close(self) -> None:
         """Closes the environment."""
-        self._renderer.close()
+        self._plotter.close()
