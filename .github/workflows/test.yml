@@ -5,6 +5,7 @@ on:
   pull_request:
 
 jobs:
+  runs-on: ubuntu-latest
   test:
     strategy:
       matrix:
@@ -13,7 +14,8 @@ jobs:
           - "3.11"
           - "3.12"
     steps:
-      - uses: actions/checkout@v4
+      - name: Check out repository
+        uses: actions/checkout@v4
 
       - name: Install Hatch
         uses: pypa/hatch@install
