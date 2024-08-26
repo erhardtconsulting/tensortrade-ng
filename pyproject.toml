@@ -70,7 +70,8 @@ doc = [
   "nbsphinx_link>=1.3.0",
   "recommonmark>=0.7.1",
   "sphinx-markdown-tables>=0.0.17",
-  "ipython>=8.26.0"
+  "ipython>=8.26.0",
+  "sphinx-autobuild>=2024.4.16"
 ]
 jlab = [
   "ipython>=8.26.0",
@@ -111,6 +112,7 @@ features = [
 ]
 [tool.hatch.envs.docs.scripts]
 build = "python -m sphinx -M html docs/source docs/build"
+serve = "python -m sphinx_autobuild docs/source docs/build"
 
 [tool.hatch.envs.hatch-test]
 python = "3.12"

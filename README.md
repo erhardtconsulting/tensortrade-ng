@@ -9,7 +9,7 @@
 
 ---
 
-**TensorTrade-NG was forked from the [TensorTrade](https://github.com/tensortrade-org/tensortrade)-Project, mainly because the code needed a lot refactoring, was outdated and it looked not really maintained anymore. Therefor we did a lot of breaking changes, removed old unused stuff and cleaned up. We tried to preserve the APIs but if you want to switch from TensorTrade to TensorTrade-NG be aware that it may take a little bit of effort. Apart from that we thank all the former developers and community for their awesome work and are happy to welcome them here.**
+> **ℹ️ TensorTrade-NG was forked from the [TensorTrade](https://github.com/tensortrade-org/tensortrade)-Project, mainly because the code needed a lot refactoring, was outdated and it looked not really maintained anymore. Therefor we did a lot of breaking changes, removed old unused stuff and cleaned up. We tried to preserve the APIs but if you want to switch from TensorTrade to TensorTrade-NG be aware that it may take a little bit of effort. Apart from that we thank all the former developers and community for their awesome work and are happy to welcome them here.**
 
 **TensorTrade-NG is still in Beta, meaning it should be used very cautiously if used in production, as it may contain bugs.**
 
@@ -21,7 +21,7 @@ Every piece of the framework is split up into re-usable components, allowing you
 
 _The goal of this framework is to enable fast experimentation, while maintaining production-quality data pipelines._
 
-Read [the documentation](https://www.tensortrade.org/en/latest/).
+Read [the documentation](https://tensortrade-ng.io/).
 
 ## Guiding principles
 
@@ -35,43 +35,59 @@ _Inspired by [Keras' guiding principles](https://github.com/keras-team/keras)._
 
 ## Getting Started
 
-You can get started testing on Google Colab or your local machine, by viewing our [many examples](https://github.com/erhardtconsulting/tensortrade-ng/tree/master/examples)
+You can get started testing on Google Colab or your local machine, by viewing our [many examples](https://github.com/erhardtconsulting/tensortrade-ng/tree/master/examples).
+
+**Recommended beginning points:**
+
+* [Sample Environment as Python Script](https://github.com/erhardtconsulting/tensortrade-ng/blob/main/examples/simple_training_environment.py)
+* 
 
 ## Installation
 
-TensorTrade requires Python >= 3.12.0 for all functionality to work as expected.
-You can install TensorTrade both as a pre-packaged solution by running the default setup command.
+TensorTrade-NG requires Python >= 3.12.0 for all functionality to work as expected.
+
+### As package
+You can install TensorTrade-NG both as a pre-packaged solution by running the default setup command.
 ```bash
-pip install tensortrade
+pip install tensortrade-ng
 ```
-You can then alternatively install TensorTrade directly from the master code repository, pulling directly from the latest commits. This will give you the latest features\fixes, but it is highly untested code, so proceed at your own risk.
+
+### Via git
+You can also alternatively install TensorTrade-NG directly from the master code repository, pulling directly from the latest commits. This will give you the latest features/fixes, but it is highly untested code, so proceed at your own risk.
 ```bash
 pip install git+https://github.com/erhardtconsulting/tensortrade-ng.git
 ```
-Alternatively you can clone\download the repository in your local environment an manually install the requirements, either the "base" ones, or the ones that also include requirements to run the examples in the documentation.
-```bash
-pip install -r requirements.txt
-pip install -r examples/requirements.txt
-```
 
-## Docker
+### Cloning the repository
 
-To run the commands below, ensure Docker is installed. Visit https://docs.docker.com/install/ for more information.
+> **⚠️ Warning**: This repository uses *git-lfs* for storing the Jupyter Notebooks and other big files. Make sure to install the [git-lfs Extension](https://git-lfs.com/) before cloning the repository.
 
-### Run Jupyter Notebooks
-
-To run a jupyter notebook in your browser, execute the following command and visit the `http://127.0.0.1:8888/?token=...` link printed to the command line.
+You can clone/download the repository in your local environment and manually install the requirements, either the "base" ones, or the ones that also include requirements to run the examples in the documentation.
 
 ```bash
-make run-notebook
+# install only base requirements
+pip install -e .
+
+# install all requirements
+pip install -e ".[dev]"
 ```
 
 ### Build Documentation
 
-To build the HTML documentation, execute the following command.
+You can either build the documentation once or serve it locally.
+
+> **Prerequisites:** You need to have [pandoc](https://pandoc.org/installing.html) installed locally for converting jupyter notebooks. Otherwise it won't work. The *pip*-version won't work, because it's just a wrapper. You need to use your package manager, like `brew` or `apt`. 
+
+**Run documentation as local webserver**
 
 ```bash
-make run-docs
+hatch run docs:serve
+```
+
+**Build documentation**
+
+```bash
+hatch run docs:build
 ```
 
 ### Run Test Suite
@@ -79,18 +95,20 @@ make run-docs
 To run the test suite, execute the following command.
 
 ```bash
-make run-tests
+hatch test
 ```
 
 ## Support
 
 You can also post **bug reports and feature requests** in [GitHub issues](https://github.com/erhardtconsulting/tensortrade-ng/issues). Make sure to read [our guidelines](https://github.com/erhardtconsulting/tensortrade-ng/blob/master/CONTRIBUTING.md) first.
 
+If you have **questions or anything else** that needs to be discussed. Please use [GitHub Discussions](https://github.com/erhardtconsulting/tensortrade-ng/discussions) rather than opening an issue.
+
 
 ## Contributors
 
-Contributions are encouraged and welcomed. This project is meant to grow as the community around it grows. Let me know on Discord in the #suggestions channel if there is anything that you would like to see in the future, or if there is anything you feel is missing.
+Contributions are encouraged and welcomed. This project is meant to grow as the community around it grows. Let us know on [GitHub Discussions](https://github.com/erhardtconsulting/tensortrade-ng/discussions) if there is anything that you would like to see in the future, or if there is anything you feel is missing.
 
-**Working on your first Pull Request?** You can learn how from this _free_ series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github)
+**Working on your first Pull Request?** You can learn how from this _free_ series [How to Contribute to an Open Source Project on GitHub](https://egghead.io/series/how-to-contribute-to-an-open-source-project-on-github).
 
 ![https://github.com/erhardtconsulting/tensortrade-ng/graphs/contributors](https://contributors-img.firebaseapp.com/image?repo=erhardtconsulting/tensortrade-ng)

@@ -97,7 +97,7 @@ TensorTrade suitable for advanced research and production use.
     :caption: Tutorials
 
     tutorials/jupyterlab.md
-    tutorials/tutorial.ipynb
+    tutorials/setup_base_environment.ipynb
 
 
 .. toctree::
