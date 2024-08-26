@@ -95,7 +95,14 @@ hatch run docs:build
 To run the test suite, execute the following command.
 
 ```bash
-hatch test
+# Test all
+hatch run test:run
+
+# Test only specific python version
+hatch run +py=3.12 test:run
+
+# Test with coverage (only one python version recommended)
+hatch run +py=3.12 test:run-cov
 ```
 
 ## Support

@@ -17,7 +17,10 @@ jobs:
         uses: pypa/hatch@install
 
       - name: Test with hatch
-        run: hatch test -a --cover
+        run: |
+          hatch run -py=3.12 test:run
+          hatch run +py=3.12 test:run-cov
+          hatch run +py=3.12 test:report-xml
 
       - name: Build with hatch
         run: hatch build

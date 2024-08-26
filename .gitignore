@@ -11,10 +11,12 @@ tags
 
 # test-related
 .coverage
+.coverage*
 .cache
 .pytest_cache
 .mypy_cache
 *.html
+coverage.xml
 
 # developer environments
 .idea
@@ -32,10 +34,6 @@ venv
 # documentation
 /docs/build
 /docs/source/api
-
-# coverage
-/coverage.xml
-/junit
 
 # setuptools_scm
 src/tensortrade/__about__.py
