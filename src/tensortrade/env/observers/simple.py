@@ -24,6 +24,7 @@ if typing.TYPE_CHECKING:
     from typing import TypeAlias
 
     from gymnasium.spaces import Space
+    from gymnasium.core import ObsType
 
 class SimpleObserver(AbstractObserver):
     """A simple observer that allows to observe the data.
@@ -61,13 +62,13 @@ class SimpleObserver(AbstractObserver):
             dtype=self._observation_dtype
         )
 
-    def observe(self) -> np.array:
+    def observe(self) -> ObsType:
         """Observes the environment.
 
         This will return the actual state of the features.
 
         :returns: The current observation window.
-        :rtype: np.array
+        :rtype: ObsType
         """
         state = list(self.trading_env.feed.state.features.values())
 

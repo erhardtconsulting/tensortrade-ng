@@ -16,16 +16,17 @@ from __future__ import annotations
 import random
 import typing
 import uuid
+from warnings import warn
 
 import gymnasium
 
 from typing import List
 
-from gymnasium.core import ActType, ObsType
+from gymnasium.core import ActType, ObsType, RenderFrame
 
 from tensortrade.core import TimeIndexed, Clock, Component
 from tensortrade.env.plotters.utils import AggregatePlotter
-from tensortrade.env.utils import FeedController
+from tensortrade.env.utils import FeedController, ObsState
 from tensortrade.feed import DataFeed
 from tensortrade.oms.orders import Broker
 
@@ -35,6 +36,7 @@ if typing.TYPE_CHECKING:
     from tensortrade.env.actions.abstract import AbstractActionScheme
     from tensortrade.env.observers.abstract import AbstractObserver
     from tensortrade.env.rewards.abstract import AbstractRewardScheme
+    from tensortrade.env.renderers.abstract import AbstractRenderer
     from tensortrade.env.plotters.abstract import AbstractPlotter
     from tensortrade.env.stoppers.abstract import AbstractStopper
     from tensortrade.env.informers.abstract import AbstractInformer
@@ -58,10 +60,12 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
     informer : `AbstractInformer`
         A component for providing information after each step of the
         environment.
-    renderer : `AbstractPlotter`
+    renderer : `AbstractRenderer`
         A component for rendering the environment.
-    kwargs : keyword arguments
-        Additional keyword arguments needed to create the environment.
+    render_mode : str
+        The chosen render mode. As example 'human'.
+    plotter : `AbstractPlotter`
+        A component for rendering the environment.
     """
 
     def __init__(self,
@@ -73,23 +77,29 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
                  *,
                  stopper: Optional[AbstractStopper] = None,
                  informer: Optional[AbstractInformer] = None,
+                 renderer: Optional[AbstractRenderer] = None,
+                 render_mode: Optional[str] = None,
                  plotter: Union[Optional[AbstractPlotter], List[AbstractPlotter]] = None,
                  random_start_pct: float = 0.00
                  ) -> None:
         super().__init__()
 
         self.random_start_pct = random_start_pct
-        self.render_mode = 'human'
 
+        # public variables
         self.agent_id: Optional[str] = None
         self.episode_id: Optional[str] = None
+        self.n_episode: int = -1
+        self.metadata: Dict[str, Any] = {}
 
+        # private variables
         self._action_scheme = action_scheme
         self._reward_scheme = reward_scheme
         self._observer = observer
         self._stopper = stopper
         self._informer = informer
         self._portfolio = portfolio
+        self._renderer = renderer
 
         # renderer can be a list of multiple plotters
         if plotter is not None and isinstance(plotter, List):
@@ -97,29 +107,42 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         else:
             self._plotter = plotter
 
-        # internal attributes
-        self._broker = Broker()
-
         # init portfolio
         self._portfolio.clock = self._clock
 
-        # init feed controller
+        # internal attributes
+        self._broker = Broker()
         self._feed = FeedController(feed, self._portfolio)
+        self._last_state: Optional[ObsState] = None
 
         # init components
         self._action_scheme.trading_env = self
         self._reward_scheme.trading_env = self
         self._observer.trading_env = self
+
+        if self._renderer is not None:
+            self._renderer.trading_env = self
+            self.metadata['render_modes'] = self._renderer.render_modes
+
         if self._plotter is not None:
             self._plotter.trading_env = self
+
         if self._stopper is not None:
             self._stopper.trading_env = self
+
         if self._informer is not None:
             self._informer.trading_env = self
 
         # set action and observation space
         self.action_space = self._action_scheme.action_space
         self.observation_space = self._observer.observation_space
+
+        # configure renderer
+        if render_mode is not None:
+            if render_mode in self.metadata['render_modes']:
+                self.render_mode = render_mode
+            else:
+                warn(f'Render mode "{render_mode}" is not supported.', UserWarning)
 
     @property
     def clock(self) -> Clock:
@@ -136,6 +159,10 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
     @property
     def feed(self) -> FeedController:
         return self._feed
+
+    @property
+    def last_state(self) -> ObsState:
+        return self._last_state
 
     @property
     def components(self) -> Dict[str, Component]:
@@ -194,11 +221,7 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
 
         # Reward the agent, get a new observation for the next decision and add the info
         reward = self._reward_scheme.reward()
-        obs = self._observer.observe()
-        if self._informer is not None:
-            info = self._informer.info()
-        else:
-            info = {}
+        obs, info = self._get_obs()
 
         # Now we decide if we need to end this episode
         if self._stopper is not None:
@@ -209,6 +232,17 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         # If we are not terminated right now, check if there is still data available
         if not terminated:
             terminated = not self.feed.has_next()
+
+        # Save last state
+        self._last_state = ObsState(
+            observation=obs,
+            info=info,
+            reward=reward,
+            terminated=terminated
+        )
+
+        if self.render_mode == 'human':
+            self._renderer.render()
 
         return obs, reward, terminated, False, info
 
@@ -234,39 +268,32 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         :rtype: Tuple[ObsType, Dict[str, Any]]
         """
         super().reset(seed=seed)
-        random.seed(seed)
 
-        if self.random_start_pct > 0:
-            random_start = random.randint(0, self.feed.features_len)
-        else:
-            random_start = 0
-
-        # reset env state
-        self.episode_id = str(uuid.uuid4())
-        self._clock.reset()
-        self._portfolio.reset()
-        self._broker.reset()
-        self._feed.reset(random_start=random_start)
-
-        # reset component state
-        self._action_scheme.reset()
-        self._observer.reset()
-        self._reward_scheme.reset()
-        if self._stopper is not None:
-            self._stopper.reset()
-        if self._informer is not None:
-            self._informer.reset()
-        if self._plotter is not None:
-            self._plotter.reset()
+        # reset all components
+        self._reset_env(seed=seed)
 
         # return new observation
-        obs = self._observer.observe()
-        if self._informer is not None:
-            info = self._informer.info()
-        else:
-            info = {}
+        obs, info = self._get_obs()
+
+        # Save last state
+        self._last_state = ObsState(
+            observation=obs,
+            info=info
+        )
+
+        if self.render_mode == 'human':
+            self._renderer.render()
 
         return obs, info
+
+    def render(self) -> Optional[Union[RenderFrame, List[RenderFrame]]]:
+        """Renders the environment according to :class:`gymnasium.Env` specifications.
+
+        :returns: A `RenderFrame` or a list of `RenderFrame` instances.
+        :rtype: Optional[Union[RenderFrame, List[RenderFrame]]]
+        """
+        if self._renderer is not None:
+            return self._renderer.render()
 
     def plot(self, **kwargs) -> None:
         """Renders the environment."""
@@ -276,3 +303,47 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
     def close(self) -> None:
         """Closes the environment."""
         self._plotter.close()
+
+    def _get_obs(self) -> Tuple[ObsType, Dict[str, Any]]:
+        obs = self._observer.observe()
+
+        if self._informer is not None:
+            info = self._informer.info()
+        else:
+            info = {}
+
+        return obs, info
+
+    def _reset_env(self, seed: Optional[int] = None) -> None:
+        if seed is not None:
+            random.seed(seed)
+
+        if self.random_start_pct > 0:
+            random_start = random.randint(0, self.feed.features_len)
+        else:
+            random_start = 0
+
+        # reset env state
+        self.episode_id = str(uuid.uuid4())
+        self.n_episode += 1
+        self._clock.reset()
+        self._portfolio.reset()
+        self._broker.reset()
+        self._feed.reset(random_start=random_start)
+
+        # reset component state
+        self._action_scheme.reset()
+        self._observer.reset()
+        self._reward_scheme.reset()
+
+        if self._stopper is not None:
+            self._stopper.reset()
+
+        if self._informer is not None:
+            self._informer.reset()
+
+        if self._renderer is not None:
+            self._renderer.reset()
+
+        if self._plotter is not None:
+            self._plotter.reset()

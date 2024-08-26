@@ -27,6 +27,7 @@ if typing.TYPE_CHECKING:
     from typing import TypeAlias
 
     from gymnasium import Space
+    from gymnasium.core import ObsType
 
 class AbstractObserver(SchemeMixin, Component, TimeIndexed):
     """A component to generate an observation at each step of an episode.
@@ -64,11 +65,11 @@ class AbstractObserver(SchemeMixin, Component, TimeIndexed):
         raise NotImplementedError()
 
     @abstractmethod
-    def observe(self) -> np.array:
+    def observe(self) -> ObsType:
         """Gets the observation at the current step of an episode.
 
         :return: The current observation of the environment.
-        :rtype: np.array
+        :rtype: ObsType
         """
         raise NotImplementedError()
 

@@ -11,6 +11,20 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License
-from tensortrade.env.utils.feed_controller import FeedController
-from tensortrade.env.utils.observation_history import ObservationHistory
-from tensortrade.env.utils.obs_state import ObsState
+from __future__ import annotations
+
+import typing
+
+from dataclasses import dataclass
+
+if typing.TYPE_CHECKING:
+    from typing import Any, Dict, Optional, SupportsFloat
+
+    from gymnasium.core import ObsType
+
+@dataclass
+class ObsState:
+    observation: ObsType
+    info: Dict[str, Any]
+    reward: Optional[SupportsFloat] = None
+    terminated: bool = False

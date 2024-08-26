@@ -12,6 +12,7 @@ from stable_baselines3 import PPO
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import StandardScaler
 
+from tensortrade.env.renderers import TerminalRenderer
 from tensortrade.env.stoppers import MaxLossStopper
 from tensortrade.feed import Stream
 from tensortrade.oms.instruments import Instrument
@@ -124,11 +125,8 @@ raw_data = ['raw-open', 'raw-high', 'raw-low', 'raw-close', 'raw-volume']
 # prepare features
 features = [Stream.source(train_df[f], dtype="float").rename(f) for f in feature_columns]
 
-# prepare schemes
-action_scheme = BSH(cash=usdt_wallet, asset=btc_wallet) # BSH Action Sheme
-reward_scheme = SimpleProfit() # Simple Profit Reward Scheme
-observer = SimpleObserver()
-stopper = MaxLossStopper(max_allowed_loss=0.5)
+# prepare action scheme
+action_scheme = BSH(cash=usdt_wallet, asset=btc_wallet) # Buy, Sell, Hold Action Scheme
 
 # prepare meta feed
 meta = [Stream.source(train_df.index).rename('date')]
@@ -145,13 +143,12 @@ env = TradingEnv(
     portfolio=portfolio,
     feed=feed,
     action_scheme=action_scheme,
-    reward_scheme=reward_scheme,
-    observer=observer,
-    stopper=stopper,
-    plotter=[PlotlyTradingChart(save_format='html')]
+    reward_scheme=SimpleProfit(), # Reward on profit
+    observer=SimpleObserver(), # Only show one observation at time
+    stopper=MaxLossStopper(max_allowed_loss=0.5), # Stop when loosing more than 50%
+    renderer=TerminalRenderer(), # Render to terminal
+    render_mode='human' # Enable rendering
 )
 
 # Last but not least create our model and learn it
-model = PPO('MlpPolicy', env, verbose=1).learn(10_000)
-
-env.plot()
+PPO('MlpPolicy', env, verbose=1).learn(10_000)

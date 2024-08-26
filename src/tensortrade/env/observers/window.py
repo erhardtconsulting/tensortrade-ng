@@ -26,6 +26,7 @@ if typing.TYPE_CHECKING:
     from typing import TypeAlias
 
     from gymnasium.spaces import Space
+    from gymnasium.core import ObsType
 
 class WindowObserver(AbstractObserver):
     """An observer that allows to use an observation window.
@@ -88,13 +89,13 @@ class WindowObserver(AbstractObserver):
                     self.trading_env.feed.next()
                     self.history.push(self.trading_env.feed.state.features)
 
-    def observe(self) -> np.array:
+    def observe(self) -> ObsType:
         """Observes the environment.
 
         This will add the actual state to the history and return the window of observations.
 
         :returns: The current observation window.
-        :rtype: np.array
+        :rtype: ObsType
         """
         self.history.push(self.trading_env.feed.state.features)
 
