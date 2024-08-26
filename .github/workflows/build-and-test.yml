@@ -11,16 +11,11 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Set up Python
-        uses: actions/setup-python@v5
-        with:
-          python-version: '3.12'
-
       - name: Install Hatch
         uses: pypa/hatch@install
 
       - name: Test with hatch
-        run: hatch test --python 3.12 --cover
+        run: hatch test -a --cover
 
       - name: Build with hatch
         run: hatch build

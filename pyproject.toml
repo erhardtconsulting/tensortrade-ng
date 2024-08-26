@@ -14,7 +14,7 @@ dependencies = [
   "plotly>=5.23.0",
   "deprecated>=1.2.14"
 ]
-requires-python = ">=3.12"
+requires-python = ">=3.10"
 authors = [
   {name = "Simon Erhardt", email = "simon@erhardt.consulting"},
   {name = "Adam King", email = "adamjking3@gmail.com"},
@@ -115,10 +115,12 @@ build = "python -m sphinx -M html docs/source docs/build"
 serve = "python -m sphinx_autobuild docs/source docs/build"
 
 [tool.hatch.envs.hatch-test]
-python = "3.12"
 features = [
   "test"
 ]
+
+[[tool.hatch.envs.hatch-test.matrix]]
+python = ["3.12", "3.11", "3.10"]
 
 [tool.coverage.run]
 omit = [
