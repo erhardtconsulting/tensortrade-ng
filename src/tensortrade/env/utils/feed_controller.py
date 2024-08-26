@@ -171,7 +171,7 @@ class FeedController(Observable, TimeIndexed):
 
         # select features feed and do some checks
         try:
-            features_feed = Stream.select(input_feed.inputs, lambda s: s.name is 'features' and isinstance(s, Group))
+            features_feed = Stream.select(input_feed.inputs, lambda s: s.name == 'features' and isinstance(s, Group))
             for fs in features_feed.inputs:
                 if not isinstance(fs, IterableStream):
                     raise ValueError('Environment only supports IterableStreams.')
@@ -191,7 +191,7 @@ class FeedController(Observable, TimeIndexed):
 
         # select meta feed and do checks
         try:
-            meta_feed = Stream.select(input_feed.inputs, lambda s: s.name is 'meta' and isinstance(s, Group))
+            meta_feed = Stream.select(input_feed.inputs, lambda s: s.name == 'meta' and isinstance(s, Group))
             for fs in features_feed.inputs:
                 if not isinstance(fs, IterableStream):
                     raise ValueError('Environment only supports IterableStreams.')

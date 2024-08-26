@@ -64,9 +64,6 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
         Additional keyword arguments needed to create the environment.
     """
 
-    agent_id: str = None
-    episode_id: str = None
-
     def __init__(self,
                  portfolio: Portfolio,
                  feed: DataFeed,
@@ -80,8 +77,12 @@ class TradingEnv(gymnasium.Env, TimeIndexed):
                  random_start_pct: float = 0.00
                  ) -> None:
         super().__init__()
+
         self.random_start_pct = random_start_pct
         self.render_mode = 'human'
+
+        self.agent_id: Optional[str] = None
+        self.episode_id: Optional[str] = None
 
         self._action_scheme = action_scheme
         self._reward_scheme = reward_scheme
