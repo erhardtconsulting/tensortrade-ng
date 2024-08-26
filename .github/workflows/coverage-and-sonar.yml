@@ -1,4 +1,4 @@
-name: Build and test
+name: Run Coverage & Code Analysis
 
 on:
   push:
@@ -18,12 +18,8 @@ jobs:
 
       - name: Test with hatch
         run: |
-          hatch run -py=3.12 test:run
           hatch run +py=3.12 test:run-cov
           hatch run +py=3.12 test:report-xml
-
-      - name: Build with hatch
-        run: hatch build
 
       - name: SonarCloud Scan
         uses: SonarSource/sonarcloud-github-action@master
