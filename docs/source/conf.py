@@ -23,6 +23,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 project = 'TensorTrade-NG'
 author = 'Simon Erhardt'
 github_url = 'https://github.com/erhardtconsulting/tensortrade-ng'
+copyright = '2024 The TensorTrade-NG authors'
 
 with open(os.path.join(os.path.dirname(os.path.abspath(__file__)), '../../', 'src', 'tensortrade', '__about__.py'), 'r') as filehandle:
     for line in filehandle:
@@ -42,7 +43,6 @@ release = __version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = [
-    'sphinx_rtd_theme',
     'sphinx.ext.autodoc',
     'sphinx.ext.doctest',
     'sphinx.ext.intersphinx',
@@ -51,6 +51,7 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
+    'sphinx_copybutton',  # add copy button
     'sphinx.ext.napoleon',  # reading numpydoc strings
     'sphinxcontrib.apidoc',  # automatically generate API docs
     'nbsphinx',
@@ -110,7 +111,7 @@ master_doc = 'index'
 #
 # This is also used if you do content translation via gettext catalogs.
 # Usually you set "language" from the command line for these cases.
-language = None
+language = 'en'
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
@@ -127,17 +128,32 @@ pygments_style = None
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
 # a list of builtin themes.
-html_theme = 'sphinx_rtd_theme'
-html_logo = '_static/logo.jpg'
+html_theme = 'furo'
+html_logo = '_static/logo.svg'
 html_favicon = '_static/favicon.ico'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the
 # documentation.
-#
-# https://sphinx-rtd-theme.readthedocs.io/en/latest/configuring.html
+
+html_title = "TensorTrade-NG Documentation"
 html_theme_options = {
-    'logo_only': True,
+    'source_repository': 'https://github.com/erhardtconsulting/tensortrade-ng/',
+    'source_branch': 'main',
+    'source_directory': 'docs/source/',
+    'sidebar_hide_name': True,
+    'footer_icons': [
+        {
+            'name': 'GitHub',
+            'url': 'https://github.com/erhardtconsulting/tensortrade-ng/',
+            'html': """
+                <svg stroke="currentColor" fill="currentColor" stroke-width="0" viewBox="0 0 16 16">
+                    <path fill-rule="evenodd" d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z"></path>
+                </svg>
+            """,
+            "class": '',
+        },
+    ],
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -231,7 +247,7 @@ epub_exclude_files = ['search.html']
 # -- Options for intersphinx extension ---------------------------------------
 
 # Example configuration for intersphinx: refer to the Python standard library.
-intersphinx_mapping = {'https://docs.python.org/': None}
+intersphinx_mapping = {'python': ('https://docs.python.org/3', None)}
 
 # -- Options for todo extension ----------------------------------------------
 

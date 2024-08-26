@@ -1,6 +1,6 @@
-# Documentation for TensorTrade
+# Documentation for TensorTrade-NG
 
-Read [the documentation](https://tensortrade.readthedocs.io).
+Read [the documentation](https://tensortrade-ng.io).
 
 This directory contains the sources (`.md` and `.rst` files) for the
 documentation. The main index page is defined in `source/index.rst`.

@@ -1,7 +1,14 @@
-TensorTrade-NG
------------
-
 |Logo|
+
+.. admonition:: Fork of TensorTrade
+   :class: seealso
+
+   TensorTrade-NG has been forked from the `TensorTrade <https://github.com/tensortrade-org/tensortrade/>`_-Project,
+   mainly because the code needed a lot refactoring, was outdated and it looked not really maintained anymore.
+   Therefor we did a lot of breaking changes, removed old unused stuff and cleaned up. We tried to preserve
+   the APIs but if you want to switch from TensorTrade to TensorTrade-NG be aware that it may take a little
+   bit of effort. Apart from that we thank all the former developers and community for their awesome work and
+   are happy to welcome them here.
 
 `TensorTrade-NG`_ is an open source Python framework for building,
 training, evaluating, and deploying robust trading algorithms using
@@ -63,7 +70,7 @@ TensorTrade suitable for advanced research and production use.
 .. _Keras' guiding principles: https://github.com/keras-team/keras
 .. _Train and Evaluate using Ray: examples/train_and_evaluate_using_ray.html
 
-.. |Logo| image:: _static/logo.jpg
+.. |Logo| image:: _static/logo.svg
 
 
 .. toctree::
@@ -88,7 +95,6 @@ TensorTrade suitable for advanced research and production use.
     examples/setup_environment_tutorial.md
     examples/train_and_evaluate_using_ray.md
     examples/renderers_and_plotly_chart.md
-    examples/use_stochastic_data.md
     examples/ledger_example.md
 
 

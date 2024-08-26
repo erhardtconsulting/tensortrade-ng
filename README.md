@@ -6,7 +6,7 @@
 ---
 
 <div align="center">
-  <img src="https://github.com/notadamking/tensortrade/blob/master/docs/source/_static/logo.jpg">
+  <img src="https://raw.githubusercontent.com/erhardtconsulting/tensortrade-ng/main/docs/source/_static/logo.svg">
 </div>
 
 ---
@@ -46,7 +46,7 @@ You can get started testing on Google Colab or your local machine, by viewing ou
 
 ## Installation
 
-TensorTrade-NG requires Python >= 3.12.0 for all functionality to work as expected.
+TensorTrade-NG recommends Python >= 3.12.0 for all functionality to work as expected.
 
 ### As package
 You can install TensorTrade-NG both as a pre-packaged solution by running the default setup command.

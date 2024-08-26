@@ -1,10 +1,13 @@
 # Code Structure
 
-The TensorTrade library is modular. The `tensortrade` library usually has a
+The TensorTrade library is modular. The `tensortrade-ng` library usually has a
 common setup when using components. If you wish to make a particular class a
 component all you need to do is subclass `Component`.
 
 ```python
+from tensortrade.core.component import Component
+
+
 class Example(Component):
     """An example component to show how to subclass."""
 
@@ -20,36 +23,32 @@ From this abstract base class, more concrete and custom subclasses can be made
 that provide the implementation of these methods.
 
 <br>**Example of Structure**<br>
-A good example of this structure is the `RewardScheme` component. This component
+A good example of this structure is the `AbstractRewardScheme` component. This component
 controls the reward mechanism of a `TradingEnv`.
 
-The beginning of the code in [RewardScheme](https://github.com/tensortrade-org/tensortrade/blob/master/tensortrade/env/generic/components/reward_scheme.py) is seen here.
+The beginning of the code in [AbstractRewardScheme](https://github.com/erhardtconsulting/tensortrade-ng/blob/main/src/tensortrade/env/rewards/abstract.py) is seen here.
 
 ```python
+from __future__ import annotations
+
 from abc import abstractmethod
 
-from tensortrade.core.component import Component
 from tensortrade.core.base import TimeIndexed
+from tensortrade.core.component import Component
+from tensortrade.env.mixins.scheme import SchemeMixin
 
 
-class RewardScheme(Component, TimeIndexed):
+class AbstractRewardScheme(SchemeMixin, Component, TimeIndexed):
     """A component to compute the reward at each step of an episode."""
 
     registered_name = "rewards"
 
     @abstractmethod
-    def reward(self, env: 'TradingEnv') -> float:
+    def reward(self) -> float:
         """Computes the reward for the current step of an episode.
 
-        Parameters
-        ----------
-        env : `TradingEnv`
-            The trading environment
-
-        Returns
-        -------
-        float
-            The computed reward.
+        :return: The computed reward.
+        :rtype: float
         """
         raise NotImplementedError()
 
@@ -58,7 +57,7 @@ class RewardScheme(Component, TimeIndexed):
         pass
 ```
 
-As you can see above, the [RewardScheme](https://github.com/tensortrade-org/tensortrade/blob/master/tensortrade/env/generic/components/reward_scheme.py) has a majority of the
+As you can see above, the [RewardScheme](https://github.com/erhardtconsulting/tensortrade-ng/blob/main/src/tensortrade/env/rewards/abstract.py) has a majority of the
 structural and mechanical details that guide all other representations of that
 type of class. When creating a new reward scheme, one needs to add further
 details for how information from then environment gets converted into a reward.

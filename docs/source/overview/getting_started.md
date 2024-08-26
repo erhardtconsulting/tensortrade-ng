@@ -1,51 +1,70 @@
 ## Getting Started
 
-You can get started testing on Google Colab or your local machine, by viewing our [many examples](https://github.com/tensortrade-org/tensortrade/tree/master/examples)
+You can get started testing on Google Colab or your local machine, by viewing our [many examples](https://github.com/erhardtconsulting/tensortrade-ng/tree/main/examples)
 
 ---
 
 ## Installation
 
-TensorTrade requires Python >= 3.11.9 for all functionality to work as expected.
+TensorTrade-NG recommends Python >= 3.12.0 for all functionality to work as expected.
 
-You can install the package from PyPi via pip or from the Github repo.
+### As package
 
+You can install TensorTrade-NG both as a pre-packaged solution by running the default setup command.
 ```bash
-pip install tensortrade
+pip install tensortrade-ng
 ```
 
-OR
+### Via git
 
+You can also alternatively install TensorTrade-NG directly from the master code repository, pulling directly from the latest commits. This will give you the latest features/fixes, but it is highly untested code, so proceed at your own risk.
 ```bash
-pip install git+https://github.com/tensortrade-org/tensortrade.git
+pip install git+https://github.com/erhardtconsulting/tensortrade-ng.git
 ```
 
+### Cloning the repository
 
-## Docker
+> **⚠️ Warning**: This repository uses *git-lfs* for storing the Jupyter Notebooks and other big files. Make sure to install the [git-lfs Extension](https://git-lfs.com/) before cloning the repository.
 
-To run the commands below ensure Docker is installed. Visit https://docs.docker.com/install/ for more information
-
-### Run Jupyter Notebooks
-
-To run a jupyter notebook execute the following
+You can clone/download the repository in your local environment and manually install the requirements, either the "base" ones, or the ones that also include requirements to run the examples in the documentation.
 
 ```bash
-make run-notebook
+# install only base requirements
+pip install -e .
+
+# install all requirements
+pip install -e ".[dev]"
 ```
-
-which will generate a link of the form 127.0.0.1:8888/?token=... Paste this link into your browsers and select the notebook you'd like to explore
-
 
 ### Build Documentation
 
-To build documentation execute the following
+You can either build the documentation once or serve it locally.
+
+> **Prerequisites:** You need to have [pandoc](https://pandoc.org/installing.html) installed locally for converting jupyter notebooks. Otherwise it won't work. The *pip*-version won't work, because it's just a wrapper. You need to use your package manager, like `brew` or `apt`. 
+
+**Run documentation as local webserver**
+
 ```bash
-make run-docs
+hatch run docs:serve
+```
+
+**Build documentation**
+
+```bash
+hatch run docs:build
 ```
 
 ### Run Test Suite
 
-To run the test suite execute the following
+To run the test suite, execute the following command.
+
 ```bash
-make run-tests
+# Test all
+hatch run test:run
+
+# Test only specific python version
+hatch run +py=3.12 test:run
+
+# Test with coverage (only one python version recommended)
+hatch run +py=3.12 test:run-cov
 ```
