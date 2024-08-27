@@ -48,14 +48,14 @@ class LaggingTransformer(AbstractTransformer):
         else:
             lag_columns = df.columns
 
+        # create dict for new lagged features
+        lagged_features = {}
         for column in lag_columns:
-            # create dict for new lagged features
-            lagged_features = {}
             for lag in self.lags:
                 # add lagged features
                 lagged_features[f'{column}_lag_{lag}'] = df[column].shift(lag)
 
-            df_lagged_features = pd.DataFrame(lagged_features)
-            df = pd.concat([df, df_lagged_features], axis=1)
+        df_lagged_features = pd.DataFrame(lagged_features)
+        df = pd.concat([df, df_lagged_features], axis=1)
 
         return df
