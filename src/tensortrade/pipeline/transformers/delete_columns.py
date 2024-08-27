@@ -39,4 +39,4 @@ class DeleteColumnsTransformer(AbstractTransformer):
         :return: The dataframe with the columns deleted.
         :rtype: DataFrame
         """
-        return df.copy().drop(columns=self.columns, errors='ignore')
+        return df.drop(columns=self.columns, errors='ignore')

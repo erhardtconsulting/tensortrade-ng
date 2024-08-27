@@ -41,6 +41,8 @@ class DataPipeline:
         :rtype: DataFrame
         """
         for transformer in self.transformers:
+            df = df.copy()
             df = transformer.transform(df)
+            df.dropna(inplace=True)
 
         return df

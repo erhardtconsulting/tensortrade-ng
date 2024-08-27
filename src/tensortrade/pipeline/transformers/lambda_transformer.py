@@ -41,4 +41,4 @@ class LambdaTransformer(AbstractTransformer):
         :return: The transformed DataFrame.
         :rtype: DataFrame
         """
-        return self.func(df.copy()).dropna()
+        return self.func(df)

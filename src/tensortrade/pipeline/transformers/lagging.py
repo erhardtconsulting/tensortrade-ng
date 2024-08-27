@@ -14,13 +14,12 @@
 from __future__ import annotations
 
 import typing
+import pandas as pd
 
 from tensortrade.pipeline.transformers.abstract import AbstractTransformer
 
 if typing.TYPE_CHECKING:
     from typing import List, Optional
-
-    from pandas import DataFrame
 
 
 class LaggingTransformer(AbstractTransformer):
@@ -35,7 +34,7 @@ class LaggingTransformer(AbstractTransformer):
         self.lags = lags
         self.columns = columns
 
-    def transform(self, df: DataFrame) -> DataFrame:
+    def transform(self, df: pd.DataFrame) -> pd.DataFrame:
         """
         Adds lagged features to the dataframe.
 
@@ -44,15 +43,19 @@ class LaggingTransformer(AbstractTransformer):
         :return: The dataframe with the lags.
         :rtype: DataFrame
         """
-        df_lagged = df.copy()
-
         if self.columns is not None:
             lag_columns = self.columns
         else:
             lag_columns = df.columns
 
         for column in lag_columns:
+            # create dict for new lagged features
+            lagged_features = {}
             for lag in self.lags:
-                df_lagged[f'{column}_lag_{lag}'] = df_lagged[column].shift(lag)
+                # add lagged features
+                lagged_features[f'{column}_lag_{lag}'] = df[column].shift(lag)
 
-        return df_lagged.dropna()
+            df_lagged_features = pd.DataFrame(lagged_features)
+            df = pd.concat([df, df_lagged_features], axis=1)
+
+        return df

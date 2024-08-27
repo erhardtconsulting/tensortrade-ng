@@ -46,6 +46,7 @@ class ScalingTransformer(AbstractTransformer):
 
         # Scale data
         scaled_data = self.scaler.transform(df)
+
         return DataFrame(scaled_data, columns=df.columns)
 
     def _fit(self, df: DataFrame):

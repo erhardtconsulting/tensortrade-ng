@@ -21,6 +21,5 @@ from tensortrade.oms import (
     exchanges,
     services
 )
-from tensortrade import pipeline
 
 from tensortrade.__about__ import __version__

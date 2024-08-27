@@ -19,9 +19,9 @@ class TestLaggingTransformer(unittest.TestCase):
         transformed_df = transformer.transform(self.data)
 
         # expected dataframe
-        expected_df = self.data.copy().iloc[1:]
-        expected_df['A_lag_1'] = [1.0, 2.0, 3.0, 4.0]
-        expected_df['B_lag_1'] = [10.0, 20.0, 30.0, 40.0]
+        expected_df = self.data.copy()
+        expected_df['A_lag_1'] = [None, 1.0, 2.0, 3.0, 4.0]
+        expected_df['B_lag_1'] = [None, 10.0, 20.0, 30.0, 40.0]
 
         pd.testing.assert_frame_equal(transformed_df, expected_df)
 
@@ -32,9 +32,9 @@ class TestLaggingTransformer(unittest.TestCase):
         transformed_df = transformer.transform(self.data)
 
         # expected dataframe
-        expected_df = self.data.copy().iloc[2:]
-        expected_df['A_lag_1'] = [2.0, 3.0, 4.0]
-        expected_df['A_lag_2'] = [1.0, 2.0, 3.0]
+        expected_df = self.data.copy()
+        expected_df['A_lag_1'] = [None, 1.0, 2.0, 3.0, 4.0]
+        expected_df['A_lag_2'] = [None, None, 1.0, 2.0, 3.0]
 
         pd.testing.assert_frame_equal(transformed_df, expected_df)
 
