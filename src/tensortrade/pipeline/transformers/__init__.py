@@ -15,3 +15,7 @@ from tensortrade.pipeline.transformers.scaling import ScalingTransformer
 from tensortrade.pipeline.transformers.lagging import LaggingTransformer
 from tensortrade.pipeline.transformers.delete_columns import DeleteColumnsTransformer
 from tensortrade.pipeline.transformers.lambda_transformer import LambdaTransformer
+from tensortrade.pipeline.transformers.mutual_information import MutualInformationTransformer
+from tensortrade.pipeline.transformers.correlation_threshold import CorrelationThresholdTransformer
+from tensortrade.pipeline.transformers.catboost_feature_importance import CatBoostFeatureImportanceTransformer
+from tensortrade.pipeline.transformers.catboost_rfecv import CatBoostRFECVTransformer

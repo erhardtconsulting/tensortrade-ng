@@ -37,3 +37,6 @@ venv
 
 # setuptools_scm
 src/tensortrade/__about__.py
+
+# catboost files
+catboost_info/

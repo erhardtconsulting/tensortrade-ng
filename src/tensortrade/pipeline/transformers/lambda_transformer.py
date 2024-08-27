@@ -15,13 +15,10 @@ from __future__ import annotations
 
 import typing
 
-from ta.utils import dropna
-
 from tensortrade.pipeline.transformers.abstract import AbstractTransformer
 
 if typing.TYPE_CHECKING:
     from typing import Callable
-
     from pandas import DataFrame
 
 

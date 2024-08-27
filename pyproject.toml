@@ -6,14 +6,15 @@ build-backend = "hatchling.build"
 name = "tensortrade-ng"
 dynamic = ["version"]
 dependencies = [
-  "numpy>=1.26.4",
+  "numpy (>=1.26.4, <2)",
   "pandas>=2.1.0",
   "gymnasium>=0.29.1",
   "pyyaml>=6.0.2",
   "matplotlib>=3.9.2",
   "plotly>=5.23.0",
   "deprecated>=1.2.14",
-  "scikit-learn>=1.5.1"
+  "scikit-learn>=1.5.1",
+  "catboost>=1.2.5"
 ]
 requires-python = ">=3.10"
 authors = [
