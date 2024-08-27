@@ -118,5 +118,10 @@ class CatBoostFeatureImportanceTransformer(AbstractTransformer):
         # get list of top features
         top_features = importance_series.head(self.num_features).index
 
+        # Ensure 'self.target_column' is always in the top features and never removed
+        if self.target_column not in top_features:
+            top_features.insert(0, self.target_column)
+            top_features.pop()
+
         # return only features in top feature list
         return df[top_features]

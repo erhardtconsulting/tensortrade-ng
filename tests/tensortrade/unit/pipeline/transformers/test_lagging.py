@@ -21,10 +21,24 @@ from tensortrade.pipeline.transformers import LaggingTransformer
 class TestLaggingTransformer(unittest.TestCase):
     def setUp(self):
         # initial data
+        dates = pd.date_range('2023-01-01', periods=5)
         self.data = pd.DataFrame({
             'A': [1, 2, 3, 4, 5],
             'B': [10, 20, 30, 40, 50]
-        })
+        }, index=dates)
+
+    def test_transform_dont_change_index(self):
+        transformer = LaggingTransformer(columns=['A', 'B'], lags=[])
+
+        # Save the original index
+        original_index = self.data.index
+
+        # Test that the transform method returns a DataFrame
+        result = transformer.transform(self.data)
+        self.assertIsInstance(result, pd.DataFrame)
+
+        # Check that the index has not been removed or altered
+        pd.testing.assert_index_equal(result.index, original_index)
 
     def test_lagging_transformer_single_lag(self):
         transformer = LaggingTransformer(lags=[1])

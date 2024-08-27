@@ -33,8 +33,20 @@ class TestCorrelationThresholdTransformer(unittest.TestCase):
         # Stronger correlated with feature_2
         data['feature_5'] = data['feature_2'] * 0.9 + np.random.rand(100) * 0.1
 
-        self.df = pd.DataFrame(data)
+        dates = pd.date_range('2023-01-01', periods=100)
+        self.df = pd.DataFrame(data, index=dates)
         self.transformer = CorrelationThresholdTransformer(threshold=0.85)
+
+    def test_transform_dont_change_index(self):
+        # Save the original index
+        original_index = self.df.index
+
+        # Test that the transform method returns a DataFrame
+        result = self.transformer.transform(self.df)
+        self.assertIsInstance(result, pd.DataFrame)
+
+        # Check that the index has not been removed or altered
+        pd.testing.assert_index_equal(result.index, original_index)
 
     def test_transform_returns_dataframe(self):
         # Test that the transform method returns a DataFrame

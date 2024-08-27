@@ -104,5 +104,10 @@ class CatBoostRFECVTransformer(AbstractTransformer):
         # Get the features that were selected
         selected_features = X.columns[rfecv.support_]
 
+        # Ensure 'self.target_column' is always in the selected_features and never removed
+        if self.target_column not in selected_features:
+            selected_features.insert(0, self.target_column)
+            selected_features.pop()
+
         # Return DataFrame with only selected features
         return df[selected_features]

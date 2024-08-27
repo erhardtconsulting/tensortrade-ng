@@ -20,11 +20,25 @@ from tensortrade.pipeline.transformers import DeleteColumnsTransformer
 
 class TestDeleteColumnsTransformer(unittest.TestCase):
     def setUp(self):
+        dates = pd.date_range('2023-01-01', periods=5)
         self.data = pd.DataFrame({
             'A': [1, 2, 3, 4, 5],
             'B': [10, 20, 30, 40, 50],
             'C': [100, 200, 300, 400, 500]
-        })
+        }, index=dates)
+
+    def test_transform_dont_change_index(self):
+        transformer = DeleteColumnsTransformer(columns=['B'])
+
+        # Save the original index
+        original_index = self.data.index
+
+        # Test that the transform method returns a DataFrame
+        result = transformer.transform(self.data)
+        self.assertIsInstance(result, pd.DataFrame)
+
+        # Check that the index has not been removed or altered
+        pd.testing.assert_index_equal(result.index, original_index)
 
     def test_delete_single_column(self):
         transformer = DeleteColumnsTransformer(columns=['B'])

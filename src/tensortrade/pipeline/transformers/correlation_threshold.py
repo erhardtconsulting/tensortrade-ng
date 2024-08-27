@@ -26,10 +26,16 @@ class CorrelationThresholdTransformer(AbstractTransformer):
 
     :params threshold: The correlation threshold above which features are considered highly correlated
                        and one of them will be removed. (Default = 0.85)
-    :rtype threshold: int
+    :type threshold: float
+    :params price_column: The price column, that should not be removed.
+    :type price_column: str
     """
-    def __init__(self, threshold: float = 0.85):
+    def __init__(self,
+                 threshold: float = 0.85,
+                 *,
+                 price_column: str = 'close'):
         self.threshold = threshold
+        self.price_column = price_column
 
     def transform(self, df: DataFrame) -> DataFrame:
         """Transforms the input DataFrame by removing features that are highly correlated.
@@ -52,7 +58,9 @@ class CorrelationThresholdTransformer(AbstractTransformer):
             column for column in upper_tri.columns if any(upper_tri[column] > self.threshold)
         ]
 
-        # Drop the highly correlated features from the DataFrame
-        reduced_df = df.drop(columns=to_drop)
+        # never remove price column
+        if self.price_column in to_drop:
+            to_drop.remove(self.price_column)
 
-        return reduced_df
+        # Drop the highly correlated features from the DataFrame
+        return df.drop(columns=to_drop)
