@@ -12,7 +12,8 @@ dependencies = [
   "pyyaml>=6.0.2",
   "matplotlib>=3.9.2",
   "plotly>=5.23.0",
-  "deprecated>=1.2.14"
+  "deprecated>=1.2.14",
+  "scikit-learn>=1.5.1"
 ]
 requires-python = ">=3.10"
 authors = [
