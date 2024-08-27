@@ -2,7 +2,7 @@ import unittest
 
 import pandas as pd
 
-from tensortrade.pipeline.pipeline import DataPipeline
+from tensortrade.pipeline import DataPipeline
 from tensortrade.pipeline.transformers import LambdaTransformer, LaggingTransformer, DeleteColumnsTransformer
 
 
